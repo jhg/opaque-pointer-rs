@@ -38,7 +38,9 @@ pub fn raw<T>(data: T) -> *mut T {
 
 /// Free pointer to type.
 /// 
-/// **WARNING: never call it twice.**
+/// # Crashes
+/// 
+/// **WARNING: never call it twice. That could produce a HEAP error that produce a crash.**
 #[inline]
 pub fn free<T>(pointer: *mut T) {
     if pointer.is_null() {
@@ -53,7 +55,9 @@ pub fn free<T>(pointer: *mut T) {
 
 /// Own back from a raw pointer.
 /// 
-/// **WARNING: never call it twice.**
+/// # Crashes
+/// 
+/// **WARNING: never call it twice. That could produce a HEAP error that produce a crash.**
 #[inline]
 pub fn own_back<T>(pointer: *mut T) -> T {
     panic_if_null(pointer);
@@ -76,6 +80,10 @@ pub fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
 }
 
 /// Reference to a C string.
+/// 
+/// # Panics
+/// 
+/// This could panic if the C string is not a valid UTF-8 string.
 #[cfg(feature = "libc")]
 #[inline]
 pub fn ref_str<'a>(string: *const c_char) -> &'a str {
