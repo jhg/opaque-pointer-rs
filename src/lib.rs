@@ -33,8 +33,7 @@ fn panic_if_null<T>(pointer: *const T) {
 /// Convert type to raw pointer.
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
-    let pointer = Box::into_raw(Box::new(data));
-    pointer
+    Box::into_raw(Box::new(data))
 }
 
 /// Free pointer to type.
@@ -58,9 +57,7 @@ pub fn free<T>(pointer: *mut T) {
 #[inline]
 pub fn own_back<T>(pointer: *mut T) -> T {
     panic_if_null(pointer);
-    let boxed = unsafe {
-        Box::from_raw(pointer)
-    };
+    let boxed = unsafe { Box::from_raw(pointer) };
     *boxed
 }
 
