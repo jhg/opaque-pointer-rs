@@ -8,18 +8,18 @@
 //! 
 //! FFI to use Rust objects from C as opaque pointer.
 
-#[cfg(not(any(feature = "std", feature = "libc")))]
+#[cfg(not(feature = "std"))]
 extern crate alloc;
-#[cfg(not(any(feature = "std", feature = "libc")))]
+#[cfg(not(feature = "std"))]
 use alloc::boxed::Box;
-#[cfg(any(feature = "std", feature = "libc"))]
+#[cfg(feature = "std")]
 extern crate std;
-#[cfg(any(feature = "std", feature = "libc"))]
+#[cfg(feature = "std")]
 use std::boxed::Box;
 
-#[cfg(feature = "libc")]
-use libc::c_char;
-#[cfg(feature = "libc")]
+#[cfg(feature = "std")]
+use std::os::raw::c_char;
+#[cfg(feature = "std")]
 use std::ffi::CStr;
 
 /// Panic if a pointer is null.
@@ -84,7 +84,7 @@ pub fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
 /// # Panics
 /// 
 /// This could panic if the C string is not a valid UTF-8 string.
-#[cfg(feature = "libc")]
+#[cfg(feature = "std")]
 #[inline]
 pub fn ref_str<'a>(string: *const c_char) -> &'a str {
     panic_if_null(string);
