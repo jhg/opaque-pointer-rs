@@ -44,7 +44,7 @@ pub fn raw<T>(data: T) -> *mut T {
 pub fn free<T>(pointer: *mut T) {
     if pointer.is_null() {
         #[cfg(debug_assertions)]
-        unreachable!("internal error: entered unreachable code");
+        unreachable!("A null pointer was passed to the library, something is wrong in the C or C++ code");
         #[cfg(not(debug_assertions))]
         return;
     }
