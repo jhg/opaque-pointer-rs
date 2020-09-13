@@ -13,6 +13,3 @@ repository = "https://github.com/jhg/opaque-pointer-rs/"
 [features]
 default = []
 std = []
-
-[dependencies]
-libc = { version = "^0.2", optional = true }
