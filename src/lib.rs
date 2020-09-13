@@ -2,9 +2,14 @@
 #![warn(missing_docs)]
 #![warn(clippy::pedantic)]
 
+#![no_std]
+
 //! C FFI opaque pointers.
 //! 
 //! FFI to use Rust objects from C as opaque pointer.
+
+extern crate alloc;
+use alloc::boxed::Box;
 
 #[cfg(feature = "libc")]
 use libc::c_char;
