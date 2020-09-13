@@ -4,7 +4,7 @@ Generic functions to work with opaque pointers when use FFI to expose Rust struc
 ## Basic usage
 With this crate you can manage raw pointers easily to expose structs that will be
  use as opaque pointers from C or C++ calling to Rust functions to use it. This
- can be used with cbindgen crate with option `parse.parse_deps = true` for it will
+ can be used with [cbindgen](https://crates.io/crates/cbindgen) crate with option `parse.parse_deps = true` for it will
  generate opaque C/C++ structs to use pointers in the arguments.
 
 Example:
