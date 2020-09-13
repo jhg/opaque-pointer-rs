@@ -8,8 +8,14 @@
 //! 
 //! FFI to use Rust objects from C as opaque pointer.
 
+#[cfg(not(feature = "std"))]
 extern crate alloc;
+#[cfg(not(feature = "std"))]
 use alloc::boxed::Box;
+#[cfg(any(feature = "std", feature = "libc"))]
+extern crate std;
+#[cfg(feature = "std")]
+use std::boxed::Box;
 
 #[cfg(feature = "libc")]
 use libc::c_char;
