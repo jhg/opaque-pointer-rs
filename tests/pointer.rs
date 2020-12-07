@@ -21,32 +21,32 @@ impl TestIt {
 #[test]
 fn opaque_pointer_with_free() {
     let pointer = opaque_pointer::raw(TestIt::new(2));
+    // Context to drop object variable
     {
-        let object = opaque_pointer::mut_object(pointer);
+        let object = unsafe { opaque_pointer::mut_object(pointer) };
         object.add(3);
     }
+    // Context to drop object variable
     {
-        let object = opaque_pointer::object(pointer);
+        let object = unsafe { opaque_pointer::object(pointer) };
         assert_eq!(object.get(), 5);
     }
-    {
-        opaque_pointer::free(pointer);
-    }
+    unsafe { opaque_pointer::free(pointer) };
 }
 
 #[test]
 fn opaque_pointer_with_own_back() {
     let pointer = opaque_pointer::raw(TestIt::new(2));
+    // Context to drop object variable
     {
-        let object = opaque_pointer::mut_object(pointer);
+        let object = unsafe { opaque_pointer::mut_object(pointer) };
         object.add(3);
     }
+    // Context to drop object variable
     {
-        let object = opaque_pointer::object(pointer);
+        let object = unsafe { opaque_pointer::object(pointer) };
         assert_eq!(object.get(), 5);
     }
-    {
-        let test_it = opaque_pointer::own_back(pointer);
-        assert_eq!(test_it.get(), 5);
-    }
+    let test_it = unsafe { opaque_pointer::own_back(pointer) };
+    assert_eq!(test_it.get(), 5);
 }

@@ -38,56 +38,74 @@ pub fn raw<T>(data: T) -> *mut T {
 
 /// Free pointer to type.
 /// 
-/// # Crashes
+/// # Safety
 /// 
-/// **WARNING: never call it twice. That could produce a HEAP error that produce a crash.**
+/// Never call it twice. That could produce a HEAP error that produce a crash.
 #[inline]
-pub fn free<T>(pointer: *mut T) {
+pub unsafe fn free<T>(pointer: *mut T) {
     if pointer.is_null() {
         #[cfg(debug_assertions)]
         unreachable!("A null pointer was passed to the library, something is wrong in the C or C++ code");
         #[cfg(not(debug_assertions))]
         return;
     }
-    unsafe { Box::from_raw(pointer) };
+    // CAUTION: this is unsafe
+    Box::from_raw(pointer);
     // We let drop the boxed data.
 }
 
 /// Own back from a raw pointer.
 /// 
-/// # Crashes
+/// # Safety
 /// 
-/// **WARNING: never call it twice. That could produce a HEAP error that produce a crash.**
+/// Never call it twice. That could produce a HEAP error that produce a crash.
 #[inline]
-pub fn own_back<T>(pointer: *mut T) -> T {
+pub unsafe fn own_back<T>(pointer: *mut T) -> T {
     panic_if_null(pointer);
-    let boxed = unsafe { Box::from_raw(pointer) };
+    // CAUTION: this is unsafe
+    let boxed = Box::from_raw(pointer);
     *boxed
 }
 
 /// Convert raw pointer to type to type reference.
+/// 
+/// # Safety
+/// 
+/// The pointer must be a valid reference to that value with that type.
 #[inline]
-pub fn object<'a, T>(pointer: *const T) -> &'a T {
+pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
     panic_if_null(pointer);
-    unsafe { &*pointer }
+    // CAUTION: this is unsafe
+    &*pointer
 }
 
 /// Convert raw pointer to type into type mutable reference.
+/// 
+/// # Safety
+/// 
+/// The pointer must be a valid reference to that value with that type.
 #[inline]
-pub fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
+pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
     panic_if_null(pointer);
-    unsafe { &mut *pointer }
+    // CAUTION: this is unsafe
+    &mut *pointer
 }
 
 /// Reference to a C string.
+/// 
+/// # Safety
+/// 
+/// The pointer must be a valid reference to that value with that type.
 /// 
 /// # Panics
 /// 
 /// This could panic if the C string is not a valid UTF-8 string.
 #[cfg(feature = "std")]
+#[must_use]
 #[inline]
-pub fn ref_str<'a>(string: *const c_char) -> &'a str {
+pub unsafe fn ref_str<'a>(string: *const c_char) -> &'a str {
     panic_if_null(string);
-    let string = unsafe { CStr::from_ptr(string) };
+    // CAUTION: this is unsafe
+    let string = CStr::from_ptr(string);
     string.to_str().expect("Invalid UTF-8 string from C or C++ code")
 }

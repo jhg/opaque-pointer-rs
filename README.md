@@ -10,8 +10,6 @@ With this crate you can manage raw pointers easily to expose structs that will b
 
 Example:
 ```rust
-use opaque_pointer;
-
 struct TestIt {
     value: u8,
 }
@@ -39,20 +37,20 @@ pub extern fn testit_new(value: u8) -> *mut TestIt {
 /// TestIt add method.
 #[no_mangle]
 pub extern fn testit_add(testit: *mut TestIt, value: u8) {
-    let testit = opaque_pointer::mut_object(testit);
+    let testit = unsafe { opaque_pointer::mut_object(testit) };
     testit.add(value);
 }
 
 /// TestIt get method.
 #[no_mangle]
 pub extern fn testit_get(testit: *const TestIt) -> u8 {
-    let testit = opaque_pointer::object(testit);
+    let testit = unsafe { opaque_pointer::object(testit) };
     testit.get()
 }
 
 /// TestIt free.
 #[no_mangle]
 pub extern fn testit_free(testit: *const TestIt) {
-    opaque_pointer::free(testit)
+    unsafe { opaque_pointer::free(testit) }
 }
 ```
