@@ -2,25 +2,31 @@ name: Rust lint & style check
 
 on:
   push:
-    branches: [ main, master, dev, develop ]
+    branches: '*'
     paths:
     - '.github/workflows/rust-lint-fmt.yml'
     - '**/*.rs'
+    - '**/clippy.toml'
+    - '**/.clippy.toml'
+    - '**/rustfmt.toml'
+    - '**/.rustfmt.toml'
   pull_request:
     branches: [ main, master, dev, develop ]
     paths:
     - '.github/workflows/rust-lint-fmt.yml'
     - '**/*.rs'
+    - '**/clippy.toml'
+    - '**/.clippy.toml'
+    - '**/rustfmt.toml'
+    - '**/.rustfmt.toml'
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   lint:
-
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
     steps:
     - uses: actions/checkout@v2
     - uses: actions-rs/toolchain@v1
