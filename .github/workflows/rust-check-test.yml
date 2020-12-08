@@ -1,15 +1,17 @@
 name: Rust check & tests
 
 on:
+  schedule:
+    - cron: '0 0 * * 0'
   push:
-    branches: [ main, master, dev, develop ]
+    branches: [ $default-branch, dev, develop ]
     paths:
     - '.github/workflows/rust-check-test.yml'
     - '**/*.rs'
     - '**/Cargo.toml'
     - '**/Cargo.lock'
   pull_request:
-    branches: [ main, master, dev, develop ]
+    branches: [ $default-branch, dev, develop ]
     paths:
     - '.github/workflows/rust-check-test.yml'
     - '**/*.rs'
