@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 0 * * *'
   push:
-    branches: [ main, master, dev, develop ]
+    branches: '*'
     paths:
     - '**/Cargo.toml'
     - '**/Cargo.lock'
@@ -19,7 +19,6 @@ on:
 jobs:
   audit:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/audit-check@v1
