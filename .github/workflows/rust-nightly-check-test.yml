@@ -1,0 +1,29 @@
+name: Rust nightly check & tests
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        rust: [ nightly ]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        override: true
+    - name: Check
+      run: cargo check --verbose
+    - name: Run tests
+      run: cargo test --verbose -- --show-output
+    - name: Run ignored tests
+      run: cargo test --verbose -- --show-output --ignored
