@@ -1,10 +1,20 @@
-name: Continuous Integration (check, tests & lint)
+name: Rust check, tests & lint
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, dev, develop ]
+    paths:
+    - '.github/workflows/rust-ci.yml'
+    - '**/*.rs'
+    - '**/Cargo.toml'
+    - '**/Cargo.lock'
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, dev, develop ]
+    paths:
+    - '.github/workflows/rust-ci.yml'
+    - '**/*.rs'
+    - '**/Cargo.toml'
+    - '**/Cargo.lock'
 
 env:
   CARGO_TERM_COLOR: always
