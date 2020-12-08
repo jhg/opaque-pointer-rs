@@ -33,6 +33,8 @@ jobs:
     - name: Check
       run: cargo check --verbose
     - name: Run tests
-      run: cargo test --verbose -- --show-output --include-ignored
+      run: cargo test --verbose -- --show-output
+    - name: Run ignored tests
+      run: cargo test --verbose -- --show-output --ignored
     - name: Run lint
       run: cargo clippy --verbose -- -D warnings
