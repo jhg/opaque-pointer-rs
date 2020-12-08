@@ -1,0 +1,38 @@
+name: Rust lint & style check
+
+on:
+  push:
+    branches: [ main, master, dev, develop ]
+    paths:
+    - '.github/workflows/rust-lint-fmt.yml'
+    - '**/*.rs'
+  pull_request:
+    branches: [ main, master, dev, develop ]
+    paths:
+    - '.github/workflows/rust-lint-fmt.yml'
+    - '**/*.rs'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        components: rustfmt, clippy
+    - uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-features
+    - name: Run lint
+      run: cargo clippy --verbose -- -D warnings
+    - name: Run fmt
+      run: cargo fmt --verbose --all -- --check
