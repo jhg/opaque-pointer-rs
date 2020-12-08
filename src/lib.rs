@@ -6,7 +6,7 @@
 
 #![no_std]
 
-//! C FFI opaque pointers.
+//! # C FFI opaque pointers.
 //! 
 //! FFI to use Rust objects from C as opaque pointer.
 
@@ -14,6 +14,7 @@
 extern crate alloc;
 #[cfg(not(feature = "std"))]
 use alloc::boxed::Box;
+
 #[cfg(feature = "std")]
 extern crate std;
 #[cfg(feature = "std")]
