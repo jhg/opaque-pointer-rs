@@ -1,4 +1,4 @@
-name: Rust check, tests & lint
+name: Rust check & tests
 
 on:
   push:
@@ -24,8 +24,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        rust: [stable, beta, nightly]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        rust: [ stable, beta, nightly ]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
 
@@ -46,5 +46,3 @@ jobs:
       run: cargo test --verbose -- --show-output
     - name: Run ignored tests
       run: cargo test --verbose -- --show-output --ignored
-    - name: Run lint
-      run: cargo clippy --verbose -- -D warnings
