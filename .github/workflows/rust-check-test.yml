@@ -4,14 +4,14 @@ on:
   schedule: # Run tests weekly to try to test with new dependencies versions
     - cron: '0 0 * * 0' # If you have a Cargo.lock remove this
   push:
-    branches: [ $default-branch, dev, develop ]
+    branches: [ main, master, dev, develop ]
     paths:
     - '.github/workflows/rust-check-test.yml'
     - '**/*.rs'
     - '**/Cargo.toml'
     - '**/Cargo.lock'
   pull_request:
-    branches: [ $default-branch, dev, develop ]
+    branches: [ main, master, dev, develop ]
     paths:
     - '.github/workflows/rust-check-test.yml'
     - '**/*.rs'
