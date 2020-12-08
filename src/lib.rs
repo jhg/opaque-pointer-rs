@@ -1,6 +1,8 @@
 #![allow(unsafe_code)]
 #![warn(missing_docs)]
 #![warn(clippy::pedantic)]
+#![deny(clippy::complexity)]
+#![deny(clippy::cognitive_complexity)]
 
 #![no_std]
 
