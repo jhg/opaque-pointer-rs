@@ -20,10 +20,8 @@ extern crate std;
 #[cfg(feature = "std")]
 use std::boxed::Box;
 
-#[cfg(feature = "std")]
-use std::os::raw::c_char;
-#[cfg(feature = "std")]
-use std::ffi::CStr;
+#[cfg(all(feature = "std", feature = "c-types"))]
+pub mod c;
 
 /// Panic if a pointer is null.
 #[inline]
@@ -92,23 +90,4 @@ pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
     panic_if_null(pointer);
     // CAUTION: this is unsafe
     &mut *pointer
-}
-
-/// Reference to a C string.
-/// 
-/// # Safety
-/// 
-/// The pointer must be a valid reference to that value with that type.
-/// 
-/// # Panics
-/// 
-/// This could panic if the C string is not a valid UTF-8 string.
-#[cfg(feature = "std")]
-#[must_use]
-#[inline]
-pub unsafe fn ref_str<'a>(string: *const c_char) -> &'a str {
-    panic_if_null(string);
-    // CAUTION: this is unsafe
-    let string = CStr::from_ptr(string);
-    string.to_str().expect("Invalid UTF-8 string from C or C++ code")
 }

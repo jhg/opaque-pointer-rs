@@ -13,3 +13,4 @@ repository = "https://github.com/jhg/opaque-pointer-rs/"
 [features]
 default = ["std"]
 std = []
+c-types = []
