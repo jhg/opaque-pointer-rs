@@ -7,6 +7,7 @@
 #![warn(clippy::pedantic)]
 #![deny(clippy::complexity)]
 #![deny(clippy::cognitive_complexity)]
+#![allow(clippy::needless_return)]
 
 #![no_std]
 
