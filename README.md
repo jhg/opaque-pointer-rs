@@ -1,7 +1,9 @@
 # opaque-pointer-rs
 Generic functions to work with opaque pointers when use FFI to expose Rust structs
 
-![Crates.io](https://img.shields.io/crates/v/opaque-pointer) ![Crates.io](https://img.shields.io/crates/l/opaque-pointer) ![Crates.io](https://img.shields.io/crates/d/opaque-pointer)
+[![Crates.io](https://img.shields.io/crates/v/opaque-pointer)](https://crates.io/crates/opaque-pointer)
+[![Crates.io](https://img.shields.io/crates/l/opaque-pointer)](https://unlicense.org/)
+[![Crates.io](https://img.shields.io/crates/d/opaque-pointer)]()
 
 ## Basic usage
 With this crate you can manage raw pointers easily to expose structs that will be
