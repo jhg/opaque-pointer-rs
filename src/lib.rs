@@ -10,9 +10,9 @@
 
 #![no_std]
 
-#[cfg(not(feature = "std"))]
+#[cfg(all(feature = "alloc", not(feature = "std")))]
 extern crate alloc;
-#[cfg(not(feature = "std"))]
+#[cfg(all(feature = "alloc", not(feature = "std")))]
 use alloc::boxed::Box;
 
 #[cfg(feature = "std")]
@@ -32,6 +32,7 @@ fn panic_if_null<T>(pointer: *const T) {
 }
 
 /// Convert type to raw pointer.
+#[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
     return Box::into_raw(Box::new(data));
@@ -42,6 +43,7 @@ pub fn raw<T>(data: T) -> *mut T {
 /// # Safety
 /// 
 /// Never call it twice. That could produce a HEAP error that produce a crash.
+#[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
     if pointer.is_null() {
@@ -60,6 +62,7 @@ pub unsafe fn free<T>(pointer: *mut T) {
 /// # Safety
 /// 
 /// Never call it twice. That could produce a HEAP error that produce a crash.
+#[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn own_back<T>(pointer: *mut T) -> T {
     panic_if_null(pointer);
