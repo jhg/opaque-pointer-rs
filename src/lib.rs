@@ -1,3 +1,7 @@
+//! # FFI opaque pointers.
+//! 
+//! FFI to use Rust objects from C as opaque pointer.
+
 #![allow(unsafe_code)]
 #![warn(missing_docs)]
 #![warn(clippy::pedantic)]
@@ -5,10 +9,6 @@
 #![deny(clippy::cognitive_complexity)]
 
 #![no_std]
-
-//! # C FFI opaque pointers.
-//! 
-//! FFI to use Rust objects from C as opaque pointer.
 
 #[cfg(not(feature = "std"))]
 extern crate alloc;
