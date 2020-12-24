@@ -3,6 +3,20 @@ name: Rust nightly check & tests
 on:
   schedule:
     - cron: '0 0 * * *'
+  push:
+    branches: [ '**-nightly' ]
+    paths:
+    - '.github/workflows/rust-nightly-check-test.yml'
+    - '**/*.rs'
+    - '**/Cargo.toml'
+    - '**/Cargo.lock'
+  pull_request:
+    branches: [ '**-nightly' ]
+    paths:
+    - '.github/workflows/rust-nightly-check-test.yml'
+    - '**/*.rs'
+    - '**/Cargo.toml'
+    - '**/Cargo.lock'
 
 env:
   CARGO_TERM_COLOR: always
