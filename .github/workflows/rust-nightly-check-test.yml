@@ -17,6 +17,8 @@ on:
     - '**/*.rs'
     - '**/Cargo.toml'
     - '**/Cargo.lock'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
