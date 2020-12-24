@@ -34,7 +34,7 @@ fn panic_if_null<T>(pointer: *const T) {
 /// Convert type to raw pointer.
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
-    Box::into_raw(Box::new(data))
+    return Box::into_raw(Box::new(data));
 }
 
 /// Free pointer to type.
@@ -65,7 +65,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> T {
     panic_if_null(pointer);
     // CAUTION: this is unsafe
     let boxed = Box::from_raw(pointer);
-    *boxed
+    return *boxed;
 }
 
 /// Convert raw pointer to type to type reference.
@@ -77,7 +77,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> T {
 pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
     panic_if_null(pointer);
     // CAUTION: this is unsafe
-    &*pointer
+    return &*pointer;
 }
 
 /// Convert raw pointer to type into type mutable reference.
@@ -89,5 +89,5 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
     panic_if_null(pointer);
     // CAUTION: this is unsafe
-    &mut *pointer
+    return &mut *pointer;
 }
