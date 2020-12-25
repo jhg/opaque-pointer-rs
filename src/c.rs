@@ -4,6 +4,7 @@
 
 use std::os::raw::c_char;
 use std::ffi::CStr;
+use std::str::Utf8Error;
 
 #[cfg(any(feature = "panic-if-null", debug_assertions))]
 use super::panic_if_null;
@@ -14,15 +15,15 @@ use super::panic_if_null;
 /// 
 /// The pointer must be a valid reference or behavior is undefined.
 /// 
-/// # Panics
+/// # Errors
 /// 
-/// This could panic if the C string is not a valid UTF-8 string.
+/// If the C string is not a valid UTF-8 string.
 #[must_use]
 #[inline]
-pub unsafe fn ref_str<'a>(string: *const c_char) -> &'a str {
+pub unsafe fn ref_str(string: *const c_char) -> Result<&str, Utf8Error> {
     #[cfg(any(feature = "panic-if-null", debug_assertions))]
     panic_if_null(string);
     // CAUTION: this is unsafe
     let string = CStr::from_ptr(string);
-    return string.to_str().expect("Invalid UTF-8 string from C or C++ code");
+    return string.to_str();
 }
