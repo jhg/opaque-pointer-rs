@@ -8,6 +8,7 @@ on:
     paths:
     - '.github/workflows/rust-nightly-check-test.yml'
     - '**/*.rs'
+    - '**/*.md' # Test examples in markdowns included as API doc
     - '**/Cargo.toml'
     - '**/Cargo.lock'
   pull_request:
@@ -15,6 +16,7 @@ on:
     paths:
     - '.github/workflows/rust-nightly-check-test.yml'
     - '**/*.rs'
+    - '**/*.md' # Test examples in markdowns included as API doc
     - '**/Cargo.toml'
     - '**/Cargo.lock'
   # Allows you to run this workflow manually from the Actions tab
