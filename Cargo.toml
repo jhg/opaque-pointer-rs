@@ -16,5 +16,5 @@ std = []
 # If you does not use std then you need alloc feature
 alloc = []
 # Allow to use some functions for FFI C types
-c-types = []
+c-types = ["std"]
 # Check pointers before to use it to panic if it is null
