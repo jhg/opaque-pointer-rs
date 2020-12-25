@@ -35,7 +35,7 @@ impl TestIt {
 /// TestIt new method.
 #[no_mangle]
 pub extern fn testit_new(value: u8) -> *mut TestIt {
-    opaque_pointer::raw(TestIt::new(testit))
+    opaque_pointer::raw(TestIt::new(value))
 }
 
 /// TestIt add method.
@@ -54,7 +54,7 @@ pub extern fn testit_get(testit: *const TestIt) -> u8 {
 
 /// TestIt free.
 #[no_mangle]
-pub extern fn testit_free(testit: *const TestIt) {
+pub extern fn testit_free(testit: *mut TestIt) {
     unsafe { opaque_pointer::free(testit) }
 }
 ```
