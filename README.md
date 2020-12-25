@@ -71,3 +71,18 @@ pub extern fn testit_free(testit: *mut TestIt) {
 - `alloc`: alternative to compile without std but some functions will not be available
 - `c-types`: it allow to use C types (like pointers to C strings) and requires std feature
 - `panic-if-null`: it will check if a pointer is null to panic before to use a null pointer
+
+## Panic & unwind in FFI functions
+
+See [comment in Rust issue #58794](https://github.com/rust-lang/rust/issues/58794#issuecomment-468109183):
+> What are the issues with allowing unwinding through foreign languages on major platforms? What is the interaction with C++ exceptions? (Saying it's "UB" doesn't cut it)
+
+And [Rust issue #58760](https://github.com/rust-lang/rust/issues/58760):
+> The default was changed to abort-by-default in extern functions in this PR.
+> This is tracking the stabilization of the #[unwind(allowed)] (and #[unwind(abort)]) attributes.
+
+Also [Rust pull request #55982](https://github.com/rust-lang/rust/pull/55982):
+> This PR changes the behavior of generated code to be sound-by-default. If an extern fn is unwound (panicked through) then it immediately aborts the program. Put another way, no extern fn can unwind.
+
+And [Rust issue #52652](https://github.com/rust-lang/rust/issues/52652):
+> This UB is not mentioned in any later release notes.
