@@ -11,7 +11,7 @@ on:
     - '**/rustfmt.toml'
     - '**/.rustfmt.toml'
   pull_request:
-    branches: [ main, master, dev, develop ]
+    branches: '*'
     paths:
     - '.github/workflows/rust-lint-fmt.yml'
     - '**/*.rs'
