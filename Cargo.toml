@@ -19,3 +19,6 @@ alloc = []
 c-types = ["std"]
 # Check pointers before to use it to panic if it is null
 panic-if-null = []
+
+[package.metadata.docs.rs]
+features = ["std", "c-types"]
