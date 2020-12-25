@@ -1,2 +1,3 @@
 /target
+# This is a library (and it has not dependencies) then it is ignored:
 Cargo.lock
