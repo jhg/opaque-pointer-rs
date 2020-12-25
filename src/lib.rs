@@ -49,10 +49,11 @@ pub fn raw<T>(data: T) -> *mut T {
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
+    #[cfg(any(feature = "panic-if-null", debug_assertions))]
+    panic_if_null(pointer);
+    // TODO: decide if remove this try to avoid crash when free a null pointer
+    #[cfg(not(any(feature = "panic-if-null", debug_assertions)))]
     if pointer.is_null() {
-        #[cfg(debug_assertions)]
-        unreachable!("A null pointer was passed to the library, something is wrong in the C or C++ code");
-        #[cfg(not(debug_assertions))]
         return;
     }
     // CAUTION: this is unsafe
