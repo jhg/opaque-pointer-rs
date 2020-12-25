@@ -5,6 +5,7 @@
 use std::os::raw::c_char;
 use std::ffi::CStr;
 
+#[cfg(any(feature = "panic-if-null", debug_assertions))]
 use super::panic_if_null;
 
 /// Convert a reference to a C string into a static reference to Rust `str`.
@@ -19,6 +20,7 @@ use super::panic_if_null;
 #[must_use]
 #[inline]
 pub unsafe fn ref_str<'a>(string: *const c_char) -> &'a str {
+    #[cfg(any(feature = "panic-if-null", debug_assertions))]
     panic_if_null(string);
     // CAUTION: this is unsafe
     let string = CStr::from_ptr(string);

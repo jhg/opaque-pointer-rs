@@ -24,6 +24,7 @@ use std::boxed::Box;
 #[cfg(all(feature = "std", feature = "c-types"))]
 pub mod c;
 
+#[cfg(any(feature = "panic-if-null", debug_assertions))]
 #[inline]
 fn panic_if_null<T>(pointer: *const T) {
     if pointer.is_null() {
@@ -69,6 +70,7 @@ pub unsafe fn free<T>(pointer: *mut T) {
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn own_back<T>(pointer: *mut T) -> T {
+    #[cfg(any(feature = "panic-if-null", debug_assertions))]
     panic_if_null(pointer);
     // CAUTION: this is unsafe
     let boxed = Box::from_raw(pointer);
@@ -87,6 +89,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> T {
 /// That could produce a HEAP error that produce a crash.
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
+    #[cfg(any(feature = "panic-if-null", debug_assertions))]
     panic_if_null(pointer);
     // CAUTION: this is unsafe
     return &*pointer;
@@ -104,6 +107,7 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
 /// That could produce a HEAP error that produce a crash.
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
+    #[cfg(any(feature = "panic-if-null", debug_assertions))]
     panic_if_null(pointer);
     // CAUTION: this is unsafe
     return &mut *pointer;
