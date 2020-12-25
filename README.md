@@ -61,3 +61,10 @@ pub extern fn testit_free(testit: *mut TestIt) {
     unsafe { opaque_pointer::free(testit) }
 }
 ```
+
+## Features
+
+- `std`: activated by default, it is required for functions using std
+- `alloc`: alternative to compile without std but some functions will not be available
+- `c-types`: it allow to use C types (like pointers to C strings) and requires std feature
+- `panic-if-null`: it will check if a pointer is null to panic before to use a null pointer
