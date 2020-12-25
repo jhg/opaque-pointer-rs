@@ -74,10 +74,8 @@ pub extern fn testit_free(testit: *mut TestIt) {
 
 ## Panic & unwind in FFI functions
 
-See [comment in Rust issue #58794](https://github.com/rust-lang/rust/issues/58794#issuecomment-468109183):
-> What are the issues with allowing unwinding through foreign languages on major platforms? What is the interaction with C++ exceptions? (Saying it's "UB" doesn't cut it)
-
-And [Rust issue #58760](https://github.com/rust-lang/rust/issues/58760):
+See [comment in Rust issue #58794](https://github.com/rust-lang/rust/issues/58794#issuecomment-468109183)
+ and [Rust issue #58760](https://github.com/rust-lang/rust/issues/58760):
 > The default was changed to abort-by-default in extern functions in this PR.
 > This is tracking the stabilization of the #[unwind(allowed)] (and #[unwind(abort)]) attributes.
 
