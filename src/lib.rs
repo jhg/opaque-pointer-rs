@@ -24,7 +24,6 @@ use std::boxed::Box;
 #[cfg(all(feature = "std", feature = "c-types"))]
 pub mod c;
 
-/// Panic if a pointer is null.
 #[inline]
 fn panic_if_null<T>(pointer: *const T) {
     if pointer.is_null() {
@@ -32,18 +31,20 @@ fn panic_if_null<T>(pointer: *const T) {
     }
 }
 
-/// Convert type to raw pointer.
+/// Convert type to raw pointer ready to be used as opaque pointer.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
     return Box::into_raw(Box::new(data));
 }
 
-/// Free pointer to type.
+/// Free memory of a previous type converted to raw pointer.
 /// 
 /// # Safety
 /// 
-/// Never call it twice. That could produce a HEAP error that produce a crash.
+/// The pointer must be a valid reference and never call it twice or behavior is undefined.
+/// 
+/// That could produce a HEAP error that produce a crash.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
@@ -58,11 +59,13 @@ pub unsafe fn free<T>(pointer: *mut T) {
     // We let drop the boxed data.
 }
 
-/// Own back from a raw pointer.
+/// Own back from a raw pointer to use Rust ownership as usually.
 /// 
 /// # Safety
 /// 
-/// Never call it twice. That could produce a HEAP error that produce a crash.
+/// The pointer must be a valid reference and never call it twice or behavior is undefined.
+/// 
+/// That could produce a HEAP error that produce a crash.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn own_back<T>(pointer: *mut T) -> T {
@@ -72,11 +75,16 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> T {
     return *boxed;
 }
 
-/// Convert raw pointer to type to type reference.
+/// Convert raw pointer to type to type reference but without back to own it.
+/// 
+/// That's the main difference with `own_back<T>`, it does not back to use ownership
+/// and values will not be dropped.
 /// 
 /// # Safety
 /// 
-/// The pointer must be a valid reference to that value with that type.
+/// The pointer must be a valid reference and never call it twice or behavior is undefined.
+/// 
+/// That could produce a HEAP error that produce a crash.
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
     panic_if_null(pointer);
@@ -84,11 +92,16 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
     return &*pointer;
 }
 
-/// Convert raw pointer to type into type mutable reference.
+/// Convert raw pointer to type into type mutable reference but without back to own it.
+/// 
+/// That's the main difference with `own_back<T>`, it does not back to use ownership
+/// and values will not be dropped.
 /// 
 /// # Safety
 /// 
-/// The pointer must be a valid reference to that value with that type.
+/// The pointer must be a valid reference and never call it twice or behavior is undefined.
+/// 
+/// That could produce a HEAP error that produce a crash.
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
     panic_if_null(pointer);

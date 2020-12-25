@@ -1,6 +1,4 @@
-//! # C types FFI opaque pointers.
-//! 
-//! Specific C types like C-like string pointers.
+//! # Specific C types like C-like string pointers.
 
 #![cfg(all(feature = "std", feature = "c-types"))]
 
@@ -9,11 +7,11 @@ use std::ffi::CStr;
 
 use super::panic_if_null;
 
-/// Reference to a C string.
+/// Convert a reference to a C string into a static reference to Rust `str`.
 /// 
 /// # Safety
 /// 
-/// The pointer must be a valid reference to that value with that type.
+/// The pointer must be a valid reference or behavior is undefined.
 /// 
 /// # Panics
 /// 

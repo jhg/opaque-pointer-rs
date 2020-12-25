@@ -13,5 +13,8 @@ repository = "https://github.com/jhg/opaque-pointer-rs/"
 [features]
 default = ["std"]
 std = []
+# If you does not use std then you need alloc feature
 alloc = []
+# Allow to use some functions for FFI C types
 c-types = []
+# Check pointers before to use it to panic if it is null
