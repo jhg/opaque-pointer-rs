@@ -1,6 +1,5 @@
-//! # FFI opaque pointers.
-//! 
-//! FFI to use Rust objects from C as opaque pointer.
+#![feature(external_doc)]
+#![doc(include = "../README.md")]
 
 #![allow(unsafe_code)]
 #![warn(missing_docs)]
