@@ -2,7 +2,7 @@ name: Rust lint & style check
 
 on:
   push:
-    branches: '*'
+    branches: [ '*', '!**-nightly' ]
     paths:
     - '.github/workflows/rust-lint-fmt.yml'
     - '**/*.rs'
@@ -11,7 +11,7 @@ on:
     - '**/rustfmt.toml'
     - '**/.rustfmt.toml'
   pull_request:
-    branches: '*'
+    branches: [ '*', '!**-nightly' ]
     paths:
     - '.github/workflows/rust-lint-fmt.yml'
     - '**/*.rs'
