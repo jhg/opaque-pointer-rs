@@ -21,7 +21,7 @@ c-types = ["std"]
 panic-if-null = []
 
 [dependencies]
-log = "*"
+log = "^0"
 
 [package.metadata.docs.rs]
 features = ["std", "c-types"]
