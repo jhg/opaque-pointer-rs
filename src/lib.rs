@@ -28,7 +28,8 @@ pub mod c;
 #[inline]
 fn panic_if_null<T>(pointer: *const T) {
     if pointer.is_null() {
-        unreachable!("A null pointer was passed to the library, something is wrong in the C or C++ code");
+        log::error!("Trying to use a NULL pointer as a opaque pointer to Rust data");
+        unreachable!("Trying to use a NULL pointer as a opaque pointer to Rust data");
     }
 }
 
@@ -54,6 +55,7 @@ pub unsafe fn free<T>(pointer: *mut T) {
     // TODO: decide if remove this try to avoid crash when free a null pointer
     #[cfg(not(any(feature = "panic-if-null", debug_assertions)))]
     if pointer.is_null() {
+        log::warn!("Trying to free a NULL pointer was ignored");
         return;
     }
     // CAUTION: this is unsafe
