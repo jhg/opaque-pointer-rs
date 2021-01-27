@@ -42,7 +42,6 @@ pub fn raw<T>(data: T) -> *mut T {
     return Box::into_raw(Box::new(data));
 }
 
-/// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
 #[deprecated(
     since = "0.7.2",
     note = "Please use the own_back function instead"
@@ -63,6 +62,7 @@ pub unsafe fn free<T>(pointer: *mut T) {
     // We let drop the boxed data.
 }
 
+/// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
 /// 
 /// # Safety
 /// 
