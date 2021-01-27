@@ -33,20 +33,16 @@ fn panic_if_null<T>(pointer: *const T) {
     }
 }
 
-/// Convert type to raw pointer ready to be used as opaque pointer.
+/// Get a heap-allocated raw pointer without ownership.
+/// 
+/// To back to manage the memory with ownership use [`own_back<T>()`].
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
     return Box::into_raw(Box::new(data));
 }
 
-/// Free memory of a previous type converted to raw pointer.
-/// 
-/// # Safety
-/// 
-/// The pointer must be a valid reference and never call it twice or behavior is undefined.
-/// 
-/// That could produce a HEAP error that produce a crash.
+/// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
@@ -63,7 +59,6 @@ pub unsafe fn free<T>(pointer: *mut T) {
     // We let drop the boxed data.
 }
 
-/// Own back from a raw pointer to use Rust ownership as usually.
 /// 
 /// # Safety
 /// 
@@ -75,21 +70,19 @@ pub unsafe fn free<T>(pointer: *mut T) {
 pub unsafe fn own_back<T>(pointer: *mut T) -> T {
     #[cfg(any(feature = "panic-if-null", debug_assertions))]
     panic_if_null(pointer);
-    // CAUTION: this is unsafe
+    // CAUTION: this is the unsafe part of the function.
     let boxed = Box::from_raw(pointer);
     return *boxed;
 }
 
-/// Convert raw pointer to type to type reference but without back to own it.
+/// Reference to a object but without back to own it.
 /// 
-/// That's the main difference with `own_back<T>`, it does not back to use ownership
-/// and values will not be dropped.
+/// That's the difference with [`own_back<T>()`], you must
+/// use [`own_back<T>()`] to own it again and it will be dropped.
 /// 
 /// # Safety
 /// 
-/// The pointer must be a valid reference and never call it twice or behavior is undefined.
-/// 
-/// That could produce a HEAP error that produce a crash.
+/// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
     #[cfg(any(feature = "panic-if-null", debug_assertions))]
@@ -98,16 +91,14 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
     return &*pointer;
 }
 
-/// Convert raw pointer to type into type mutable reference but without back to own it.
+/// Mutable reference to a object but without back to own it.
 /// 
-/// That's the main difference with `own_back<T>`, it does not back to use ownership
-/// and values will not be dropped.
+/// That's the difference with [`own_back<T>()`], you must
+/// use [`own_back<T>()`] to own it again and it will be dropped.
 /// 
 /// # Safety
 /// 
-/// The pointer must be a valid reference and never call it twice or behavior is undefined.
-/// 
-/// That could produce a HEAP error that produce a crash.
+/// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
     #[cfg(any(feature = "panic-if-null", debug_assertions))]
