@@ -43,6 +43,10 @@ pub fn raw<T>(data: T) -> *mut T {
 }
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
+#[deprecated(
+    since = "0.7.2",
+    note = "Please use the own_back function instead"
+)]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
