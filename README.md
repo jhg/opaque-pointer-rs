@@ -19,51 +19,46 @@ You can find more information about using Rust from other languages in
 
 ## Examples
 
+Creating FFIs to use a Rust's `struct` methods from C or C++:
+
 ```rust
-struct TestIt {
-    value: u8,
-}
+struct TestIt { value: u8 }
 
 impl TestIt {
-    pub fn new(value: u8) -> Self {
-        Self {
-            value,
-        }
-    }
-    pub fn add(&mut self, value: u8) {
-        self.value += value;
-    }
-    pub fn get(&self) -> u8 {
-        self.value
-    }
+    pub fn add(&mut self, value: u8) { self.value += value }
+    pub fn get(&self) -> u8 { self.value }
 }
 
-/// TestIt new method.
+/// Ownership will NOT control the heap-allocated memory until own it back.
 #[no_mangle]
-pub extern fn testit_new(value: u8) -> *mut TestIt {
-    opaque_pointer::raw(TestIt::new(value))
+pub extern fn test_it_new(value: u8) -> *mut TestIt {
+    return opaque_pointer::raw(TestIt { value });
 }
 
-/// TestIt add method.
+/// Drop (free memory of) Rust's TestIt object as usually.
 #[no_mangle]
-pub extern fn testit_add(testit: *mut TestIt, value: u8) {
-    let testit = unsafe { opaque_pointer::mut_object(testit) };
-    testit.add(value);
+pub extern fn test_it_free(test_it: *mut TestIt) {
+    let test_it = unsafe { opaque_pointer::own_back(test_it) };
+    // You can use it or only let it be dropped.
 }
 
-/// TestIt get method.
 #[no_mangle]
-pub extern fn testit_get(testit: *const TestIt) -> u8 {
-    let testit = unsafe { opaque_pointer::object(testit) };
-    testit.get()
+pub extern fn test_it_add(test_it: *mut TestIt, value: u8) {
+    let test_it = unsafe { opaque_pointer::mut_object(test_it) };
+    test_it.add(value);
+    // Here will NOT be dropped, the pointer continues been valid.
 }
 
-/// TestIt free.
 #[no_mangle]
-pub extern fn testit_free(testit: *mut TestIt) {
-    unsafe { opaque_pointer::free(testit) }
+pub extern fn test_it_get(test_it: *const TestIt) -> u8 {
+    let test_it = unsafe { opaque_pointer::object(test_it) };
+    return test_it.get();
+    // Here will NOT be dropped, the pointer continues been valid.
 }
 ```
+
+The previous example is compiled when tests are run. If you have an error
+with that code, please, [open a issue](https://github.com/jhg/opaque-pointer-rs/issues?q=is%3Aissue+is%3Aopen).
 
 ## Features
 
