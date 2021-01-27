@@ -8,10 +8,10 @@ Generic functions to work with opaque pointers when use FFI to expose Rust struc
 
 ## Basic usage
 
-With this crate you can manage raw pointers easily to expose structs that will be
+With this crate you can manage raw pointers easily to expose `structs` that will be
  use as opaque pointers from C or C++ calling to Rust functions to use it. This
  can be used with [cbindgen](https://crates.io/crates/cbindgen) crate with option `parse.parse_deps = true`
- for it will generate opaque C/C++ structs to use pointers in the arguments.
+ for it will generate opaque C/C++ `structs` to use pointers in the arguments.
 
 You can find more information about using Rust from other languages in
  [The Rust FFI Omnibus objects section](http://jakegoulding.com/rust-ffi-omnibus/objects/)
@@ -62,10 +62,10 @@ with that code, please, [open a issue](https://github.com/jhg/opaque-pointer-rs/
 
 ## Features
 
-- `std`: activated by default, it is required for functions using std
-- `alloc`: alternative to compile without std but some functions will not be available
-- `c-types`: it allow to use C types (like pointers to C strings) and requires std feature
-- `panic-if-null`: it will check if a pointer is null to panic before to use a null pointer
+- `std`: activated by default, it is required for c-types FFI.
+- `alloc`: required if compile without std.
+- `c-types`: FFI for C types, requires std feature.
+- `panic-if-null`: it will check if a pointer is null to panic before to use it.
 
 ## Panic & unwind in FFI functions
 
