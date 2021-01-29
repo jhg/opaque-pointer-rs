@@ -62,6 +62,7 @@ pub unsafe fn free<T>(pointer: *mut T) {
 /// The pointer must be a valid reference and never call it twice or behavior is undefined.
 /// 
 /// That could produce a HEAP error that produce a crash.
+#[doc(alias = "free")]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn own_back<T>(pointer: *mut T) -> T {
