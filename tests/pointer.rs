@@ -19,34 +19,25 @@ impl TestIt {
 }
 
 #[test]
-fn opaque_pointer_with_free() {
+fn own_back() {
     let pointer = opaque_pointer::raw(TestIt::new(2));
-    // Context to drop object variable
-    {
-        let object = unsafe { opaque_pointer::mut_object(pointer) };
-        object.add(3);
-    }
-    // Context to drop object variable
-    {
-        let object = unsafe { opaque_pointer::object(pointer) };
-        assert_eq!(object.get(), 5);
-    }
-    unsafe { opaque_pointer::free(pointer) };
+    let test_it = unsafe { opaque_pointer::own_back(pointer) };
+    assert_eq!(test_it.get(), 2);
 }
 
 #[test]
-fn opaque_pointer_with_own_back() {
+fn immutable_reference() {
     let pointer = opaque_pointer::raw(TestIt::new(2));
-    // Context to drop object variable
-    {
-        let object = unsafe { opaque_pointer::mut_object(pointer) };
-        object.add(3);
-    }
-    // Context to drop object variable
-    {
-        let object = unsafe { opaque_pointer::object(pointer) };
-        assert_eq!(object.get(), 5);
-    }
-    let test_it = unsafe { opaque_pointer::own_back(pointer) };
-    assert_eq!(test_it.get(), 5);
+    let object = unsafe { opaque_pointer::object(pointer) };
+    assert_eq!(object.get(), 2);
+    unsafe { opaque_pointer::own_back(pointer) };
+}
+
+#[test]
+fn mutable_reference() {
+    let pointer = opaque_pointer::raw(TestIt::new(2));
+    let object = unsafe { opaque_pointer::mut_object(pointer) };
+    object.add(3);
+    assert_eq!(object.get(), 5);
+    unsafe { opaque_pointer::own_back(pointer) };
 }
