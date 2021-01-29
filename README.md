@@ -69,7 +69,15 @@ with that code, please, [open a issue](https://github.com/jhg/opaque-pointer-rs/
 
 ## Panic & unwind in FFI functions
 
-See [comment in Rust issue #58794](https://github.com/rust-lang/rust/issues/58794#issuecomment-468109183)
+As a good resume see [comment in gtk-rs issue #78](https://github.com/gtk-rs/gtk-rs/issues/78#issuecomment-753841968):
+> Currently any unwinding across extern "C" functions is UB, even if all those functions happens
+> to be implemented in Rust. That's part of what that WG is working on solving.
+> For example this adds support for an extern "C-unwind" ABI that explicitly allows unwinding (and AFAIU causes
+> unwinding through extern "C" to abort as it should).
+
+And the [mentioned pull request #76570 of Rust](https://github.com/rust-lang/rust/pull/76570).
+
+Also see [comment in Rust issue #58794](https://github.com/rust-lang/rust/issues/58794#issuecomment-468109183)
  and [Rust issue #58760](https://github.com/rust-lang/rust/issues/58760):
 > The default was changed to abort-by-default in extern functions in this PR.
 > This is tracking the stabilization of the #[unwind(allowed)] (and #[unwind(abort)]) attributes.
