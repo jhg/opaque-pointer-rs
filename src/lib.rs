@@ -9,6 +9,8 @@
 #![deny(clippy::cognitive_complexity)]
 #![allow(clippy::needless_return)] // To avoid surprise in devs more familiar where return is always explicit
 
+#![doc(html_no_source)]
+
 #![no_std]
 
 #[cfg(all(feature = "alloc", not(feature = "std")))]
