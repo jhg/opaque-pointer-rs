@@ -1,4 +1,6 @@
 //! # Specific C types like C-like string pointers.
+//!
+//! You need to use the `c-types` feature to use this module.
 
 #![cfg(all(feature = "std", feature = "c-types"))]
 
