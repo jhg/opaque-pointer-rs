@@ -49,17 +49,7 @@ pub fn raw<T>(data: T) -> *mut T {
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
-    #[cfg(any(feature = "panic-if-null", debug_assertions))]
-    panic_if_null(pointer);
-    // TODO: decide if remove this try to avoid crash when free a null pointer
-    #[cfg(not(any(feature = "panic-if-null", debug_assertions)))]
-    if pointer.is_null() {
-        log::warn!("Trying to free a NULL pointer was ignored");
-        return;
-    }
-    // CAUTION: this is unsafe
-    Box::from_raw(pointer);
-    // We let drop the boxed data.
+    own_back(pointer);
 }
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
