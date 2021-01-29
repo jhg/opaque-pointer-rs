@@ -27,6 +27,7 @@ log = "^0"
 [package.metadata.docs.rs]
 features = ["std", "c-types"]
 
+# TODO: find a better solution:
 # Work around for test with features like c-types to detect compile errors
 # like the one introduced with the commit 3a1d15f33e8e418ef6bee2b7b9e096780bd2c8ac
 # removing needed lifetime but tests and compilation without c-types did not fail,
