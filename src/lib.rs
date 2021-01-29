@@ -48,6 +48,7 @@ pub fn raw<T>(data: T) -> *mut T {
     since = "0.7.2",
     note = "Please use the own_back function instead"
 )]
+#[allow(missing_docs)]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
