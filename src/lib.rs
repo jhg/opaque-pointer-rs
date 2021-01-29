@@ -46,7 +46,7 @@ pub fn raw<T>(data: T) -> *mut T {
 
 #[deprecated(
     since = "0.7.2",
-    note = "Please use the own_back function instead"
+    note = "Use `own_back<T>()` instead"
 )]
 #[allow(missing_docs)]
 #[cfg(any(feature = "alloc", feature = "std"))]
