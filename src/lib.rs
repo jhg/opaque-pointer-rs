@@ -7,7 +7,7 @@
 #![warn(clippy::pedantic)]
 #![deny(clippy::complexity)]
 #![deny(clippy::cognitive_complexity)]
-#![allow(clippy::needless_return)] // To avoid surprise in devs more familiar where return is always explicit
+#![allow(clippy::needless_return)] // To avoid surprise in devs more familiar with languages where return is always explicit
 #![doc(html_no_source)]
 #![no_std]
 
