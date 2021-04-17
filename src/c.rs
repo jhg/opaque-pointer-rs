@@ -4,21 +4,21 @@
 
 #![cfg(all(feature = "std", feature = "c-types"))]
 
-use std::os::raw::c_char;
 use std::ffi::CStr;
+use std::os::raw::c_char;
 use std::str::Utf8Error;
 
 #[cfg(any(feature = "panic-if-null", debug_assertions))]
 use super::panic_if_null;
 
 /// Convert a reference to a C string into a static reference to Rust `str`.
-/// 
+///
 /// # Safety
-/// 
+///
 /// The pointer must be a valid reference or behavior is undefined.
-/// 
+///
 /// # Errors
-/// 
+///
 /// If the C string is not a valid UTF-8 string.
 #[must_use]
 #[inline]

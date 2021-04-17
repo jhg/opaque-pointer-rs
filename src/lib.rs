@@ -1,5 +1,5 @@
 //! # FFI opaque pointers.
-//! 
+//!
 //! FFI to use Rust objects from C as opaque pointer.
 
 #![allow(unsafe_code)]
@@ -8,9 +8,7 @@
 #![deny(clippy::complexity)]
 #![deny(clippy::cognitive_complexity)]
 #![allow(clippy::needless_return)] // To avoid surprise in devs more familiar where return is always explicit
-
 #![doc(html_no_source)]
-
 #![no_std]
 
 #[cfg(all(feature = "alloc", not(feature = "std")))]
@@ -36,7 +34,7 @@ fn panic_if_null<T>(pointer: *const T) {
 }
 
 /// Get a heap-allocated raw pointer without ownership.
-/// 
+///
 /// To back to manage the memory with ownership use [`own_back<T>()`].
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
@@ -44,10 +42,7 @@ pub fn raw<T>(data: T) -> *mut T {
     return Box::into_raw(Box::new(data));
 }
 
-#[deprecated(
-    since = "0.7.2",
-    note = "Use `own_back<T>()` instead"
-)]
+#[deprecated(since = "0.7.2", note = "Use `own_back<T>()` instead")]
 #[allow(missing_docs)]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
@@ -56,11 +51,11 @@ pub unsafe fn free<T>(pointer: *mut T) {
 }
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
-/// 
+///
 /// # Safety
-/// 
+///
 /// The pointer must be a valid reference and never call it twice or behavior is undefined.
-/// 
+///
 /// That could produce a HEAP error that produce a crash.
 #[doc(alias = "free")]
 #[cfg(any(feature = "alloc", feature = "std"))]
@@ -74,12 +69,12 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> T {
 }
 
 /// Reference to a object but without back to own it.
-/// 
+///
 /// That's the difference with [`own_back<T>()`], you must
 /// use [`own_back<T>()`] to own it again and it will be dropped.
-/// 
+///
 /// # Safety
-/// 
+///
 /// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
@@ -90,12 +85,12 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
 }
 
 /// Mutable reference to a object but without back to own it.
-/// 
+///
 /// That's the difference with [`own_back<T>()`], you must
 /// use [`own_back<T>()`] to own it again and it will be dropped.
-/// 
+///
 /// # Safety
-/// 
+///
 /// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {

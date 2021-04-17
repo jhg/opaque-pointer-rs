@@ -6,9 +6,7 @@ struct TestIt {
 
 impl TestIt {
     pub fn new(value: u8) -> Self {
-        Self {
-            value,
-        }
+        Self { value }
     }
     pub fn add(&mut self, value: u8) {
         self.value += value;
