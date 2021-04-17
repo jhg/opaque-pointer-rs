@@ -1,4 +1,4 @@
-name: Cargo dependencies audit
+name: Dependencies Audit
 
 on:
   schedule:

@@ -1,4 +1,4 @@
-name: Rust nightly lint & style check
+name: Nightly Lint & Style Check
 
 on:
   push:

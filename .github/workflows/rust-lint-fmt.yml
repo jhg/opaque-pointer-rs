@@ -1,4 +1,4 @@
-name: Rust lint & style check
+name: Lint & Style Check
 
 on:
   push:

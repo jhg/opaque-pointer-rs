@@ -1,4 +1,4 @@
-name: Rust nightly check & tests
+name: Nightly Check & Test
 
 on:
   schedule:
