@@ -5,6 +5,7 @@ Generic functions to work with opaque pointers when use FFI to expose Rust struc
 [![Crates.io](https://img.shields.io/crates/v/opaque-pointer)](https://crates.io/crates/opaque-pointer)
 [![Crates.io](https://img.shields.io/crates/l/opaque-pointer)](https://unlicense.org/)
 [![Crates.io](https://img.shields.io/crates/d/opaque-pointer)](.)
+[![Rust check & tests](https://github.com/jhg/opaque-pointer-rs/actions/workflows/rust-check-test.yml/badge.svg)](https://github.com/jhg/opaque-pointer-rs/actions/workflows/rust-check-test.yml)
 [![Cargo dependencies audit](https://github.com/jhg/opaque-pointer-rs/actions/workflows/cargo-audit.yml/badge.svg)](https://github.com/jhg/opaque-pointer-rs/actions/workflows/cargo-audit.yml)
 
 ## Basic usage
