@@ -1,0 +1,113 @@
+name: Check & Test
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches: [ '*' ]
+    paths:
+    - '.github/workflows/*.yml'
+    - '**/*.rs'
+    - '**/*.md' # Test examples in markdowns included as API doc
+    - '**/Cargo.toml'
+    - '**/Cargo.lock'
+  pull_request:
+    branches: [ '*' ]
+    paths:
+    - '.github/workflows/*.yml'
+    - '**/*.rs'
+    - '**/*.md' # Test examples in markdowns included as API doc
+    - '**/Cargo.toml'
+    - '**/Cargo.lock'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        rust: [ stable, beta ]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        override: true
+    - name: Check
+      run: cargo check --verbose
+    - name: Tests
+      run: cargo test --verbose -- --show-output
+    - name: Ignored tests
+      run: cargo test --verbose -- --show-output --ignored
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' && !contains(github.ref, 'refs/tags/v')
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        components: rustfmt, clippy
+    - uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-features
+    - name: Run lint
+      run: cargo clippy --verbose -- -D warnings
+    - name: Run fmt
+      run: cargo fmt --verbose --all -- --check
+  nightly-test:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        rust: [ nightly ]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    if: endsWith(github.ref, '-nightly') || github.event_name == 'schedule'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        override: true
+    - name: Check
+      run: cargo check --verbose
+    - name: Tests
+      run: cargo test --verbose -- --show-output
+    - name: Ignored tests
+      run: cargo test --verbose -- --show-output --ignored
+  nightly-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: endsWith(github.ref, '-nightly') || github.event_name != 'schedule'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        override: true
+        components: rustfmt, clippy
+    - uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-features
+    - name: Run lint
+      run: cargo clippy --verbose -- -D warnings
+    - name: Run fmt
+      run: cargo fmt --verbose --all -- --check
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
