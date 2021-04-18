@@ -45,9 +45,15 @@ pub fn raw<T>(data: T) -> *mut T {
 }
 
 #[deprecated(since = "0.7.2", note = "Use `own_back<T>()` instead")]
-#[allow(missing_docs)]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
+/// Call to `own_back<T>(pointer: *mut T)` ignoring the result.
+///
+/// This ignore null pointers without an error.
+///
+/// # Safety
+///
+/// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 pub unsafe fn free<T>(pointer: *mut T) {
     let _ = own_back(pointer); // Ignore the must use lint as previous behavior was ignore null pointers
 }
