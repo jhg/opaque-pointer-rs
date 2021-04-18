@@ -4,7 +4,7 @@ Generic functions to work with opaque pointers when use FFI to expose Rust struc
 
 [![Crates.io](https://img.shields.io/crates/v/opaque-pointer)](https://crates.io/crates/opaque-pointer)
 [![Crates.io](https://img.shields.io/crates/l/opaque-pointer)](https://unlicense.org/)
-[![Crates.io](https://img.shields.io/crates/d/opaque-pointer)](.)
+[![Crates.io](https://img.shields.io/crates/d/opaque-pointer)](https://crates.io/crates/opaque-pointer)
 
 ## Basic usage
 
