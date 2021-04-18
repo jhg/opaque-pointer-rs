@@ -44,16 +44,17 @@ pub extern fn test_it_free(test_it: *mut TestIt) {
 }
 
 #[no_mangle]
-pub extern fn test_it_add(test_it: *mut TestIt, value: u8) {
-    let test_it = unsafe { opaque_pointer::mut_object(test_it) };
+pub extern fn test_it_add(test_it: *mut TestIt, value: u8) -> Result<(), opaque_pointer::error::PointerError> {
+    let test_it = unsafe { opaque_pointer::mut_object(test_it)? };
     test_it.add(value);
     // Here will NOT be dropped, the pointer continues been valid.
+    return Ok(());
 }
 
 #[no_mangle]
-pub extern fn test_it_get(test_it: *const TestIt) -> u8 {
-    let test_it = unsafe { opaque_pointer::object(test_it) };
-    return test_it.get();
+pub extern fn test_it_get(test_it: *const TestIt) -> Result<u8, opaque_pointer::error::PointerError> {
+    let test_it = unsafe { opaque_pointer::object(test_it)? };
+    return Ok(test_it.get());
     // Here will NOT be dropped, the pointer continues been valid.
 }
 ```
