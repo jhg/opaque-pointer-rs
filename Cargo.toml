@@ -1,6 +1,6 @@
 [package]
 name = "opaque-pointer"
-version = "0.7.2"
+version = "0.8.0"
 description = "Generic functions to work with opaque pointers when use FFI to expose Rust structs"
 authors = ["Jesus Hernandez <jesushdez@protonmail.com>"]
 license = "Unlicense"
@@ -18,8 +18,6 @@ std = []
 alloc = []
 # Allow to use some FFI for C types
 c-types = ["std"]
-# Check pointers before to use it to panic if it is null
-panic-if-null = []
 
 [dependencies]
 log = "^0"

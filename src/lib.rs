@@ -24,13 +24,15 @@ use std::boxed::Box;
 #[cfg(all(feature = "std", feature = "c-types"))]
 pub mod c;
 
-#[cfg(any(feature = "panic-if-null", debug_assertions))]
+pub mod error;
+
 #[inline]
-fn panic_if_null<T>(pointer: *const T) {
+fn null_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
     if pointer.is_null() {
-        log::error!("Trying to use a NULL pointer as a opaque pointer to Rust data");
-        unreachable!("Trying to use a NULL pointer as a opaque pointer to Rust data");
+        log::error!("Using a NULL pointer as a opaque pointer to Rust data");
+        return Err(crate::error::PointerError::NulPointer);
     }
+    return Ok(());
 }
 
 /// Get a heap-allocated raw pointer without ownership.
@@ -47,7 +49,7 @@ pub fn raw<T>(data: T) -> *mut T {
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
-    own_back(pointer);
+    let _ = own_back(pointer);  // Ignore the must use lint as previous behavior was ignore null pointers
 }
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
@@ -60,12 +62,11 @@ pub unsafe fn free<T>(pointer: *mut T) {
 #[doc(alias = "free")]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
-pub unsafe fn own_back<T>(pointer: *mut T) -> T {
-    #[cfg(any(feature = "panic-if-null", debug_assertions))]
-    panic_if_null(pointer);
+pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerError> {
+    null_error_check(pointer)?;
     // CAUTION: this is the unsafe part of the function.
     let boxed = Box::from_raw(pointer);
-    return *boxed;
+    return Ok(*boxed);
 }
 
 /// Reference to a object but without back to own it.
@@ -77,11 +78,10 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> T {
 ///
 /// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 #[inline]
-pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
-    #[cfg(any(feature = "panic-if-null", debug_assertions))]
-    panic_if_null(pointer);
+pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::PointerError> {
+    null_error_check(pointer)?;
     // CAUTION: this is unsafe
-    return &*pointer;
+    return Ok(&*pointer);
 }
 
 /// Mutable reference to a object but without back to own it.
@@ -93,9 +93,8 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> &'a T {
 ///
 /// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 #[inline]
-pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> &'a mut T {
-    #[cfg(any(feature = "panic-if-null", debug_assertions))]
-    panic_if_null(pointer);
+pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, crate::error::PointerError> {
+    null_error_check(pointer)?;
     // CAUTION: this is unsafe
-    return &mut *pointer;
+    return Ok(&mut *pointer);
 }
