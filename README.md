@@ -40,8 +40,7 @@ pub extern fn test_it_new(value: u8) -> *mut TestIt {
 /// Drop (free memory of) Rust's TestIt object as usually.
 #[no_mangle]
 pub extern fn test_it_free(test_it: *mut TestIt) {
-    let test_it = unsafe { opaque_pointer::own_back(test_it) };
-    // You can use it or only let it be dropped.
+    let test_it = unsafe { opaque_pointer::free(test_it) };
 }
 
 #[no_mangle]
