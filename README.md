@@ -32,7 +32,7 @@ impl Counter {
 
 /// Ownership will NOT control the heap-allocated memory until own it back.
 #[no_mangle]
-pub extern fn counter_new(value: u8) -> *mut TestIt {
+pub extern fn counter_new(value: u8) -> *mut Counter {
     return opaque_pointer::raw(Counter::new());
 }
 
@@ -43,7 +43,7 @@ pub extern fn counter_free(counter: *mut Counter) {
 }
 
 #[no_mangle]
-pub extern fn counter_add(counter: *mut Counter, value: u8) -> boolean {
+pub extern fn counter_add(counter: *mut Counter, value: u8) -> bool {
     let counter = unsafe { opaque_pointer::mut_object(counter) };
     if counter.is_err() {
         return false;
