@@ -49,7 +49,7 @@ pub fn raw<T>(data: T) -> *mut T {
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
-    let _ = own_back(pointer);  // Ignore the must use lint as previous behavior was ignore null pointers
+    let _ = own_back(pointer); // Ignore the must use lint as previous behavior was ignore null pointers
 }
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
