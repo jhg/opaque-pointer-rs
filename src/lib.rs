@@ -1,4 +1,4 @@
-//! # FFI opaque pointers.
+//! FFI opaque pointers.
 //!
 //! FFI to use Rust objects from C as opaque pointer.
 

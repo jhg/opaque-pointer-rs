@@ -1,4 +1,4 @@
-//! # Specific C types like C-like string pointers.
+//! Specific C types like C-like string pointers.
 //!
 //! You need to use the `c-types` feature to use this module.
 
