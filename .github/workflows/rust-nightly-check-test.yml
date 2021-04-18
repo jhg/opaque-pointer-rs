@@ -41,7 +41,9 @@ jobs:
         override: true
     - name: Check
       run: cargo check --verbose
-    - name: Run tests
+    - name: Tests
       run: cargo test --verbose -- --show-output
-    - name: Run ignored tests
+    - name: Ignored tests
       run: cargo test --verbose -- --show-output --ignored
+    - name: Dry run publish
+      run: cargo publish --dry-run --verbose
