@@ -59,7 +59,7 @@ pub fn raw<T>(data: T) -> *mut T {
 /// See [`own_back<T>()`] reference doc.
 #[deprecated(since = "0.7.2", note = "Use own_back<T>() instead")]
 #[cfg(any(feature = "alloc", feature = "std"))]
-#[inline(always)]
+#[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
     std::mem::drop(own_back(pointer))
 }
