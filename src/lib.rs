@@ -54,6 +54,10 @@ pub unsafe fn free<T>(pointer: *mut T) {
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
 ///
+/// # Errors
+///
+/// The pointer must be not null as it is an obvious invalid pointer.
+///
 /// # Safety
 ///
 /// The pointer must be a valid reference and never call it twice or behavior is undefined.
@@ -74,6 +78,10 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerErr
 /// That's the difference with [`own_back<T>()`], you must
 /// use [`own_back<T>()`] to own it again and it will be dropped.
 ///
+/// # Errors
+///
+/// The pointer must be not null as it is an obvious invalid pointer.
+///
 /// # Safety
 ///
 /// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
@@ -88,6 +96,10 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::Po
 ///
 /// That's the difference with [`own_back<T>()`], you must
 /// use [`own_back<T>()`] to own it again and it will be dropped.
+///
+/// # Errors
+///
+/// The pointer must be not null as it is an obvious invalid pointer.
 ///
 /// # Safety
 ///
