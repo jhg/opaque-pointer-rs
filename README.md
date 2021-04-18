@@ -65,9 +65,10 @@ with that code, please, [open a issue](https://github.com/jhg/opaque-pointer-rs/
 - `std`: activated by default, it is required for c-types FFI.
 - `alloc`: required if compile without std.
 - `c-types`: FFI for C types, requires std feature.
-- `panic-if-null`: it will check if a pointer is null to panic before to use it.
 
 ## Panic & unwind in FFI functions
+
+This create returns a result to avoid panic if the pointer is null, if yours FFI need to panic check out the next links.
 
 As a good resume see [comment in gtk-rs issue #78](https://github.com/gtk-rs/gtk-rs/issues/78#issuecomment-753841968):
 > Currently any unwinding across extern "C" functions is UB, even if all those functions happens
