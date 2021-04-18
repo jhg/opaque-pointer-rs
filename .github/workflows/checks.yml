@@ -1,4 +1,4 @@
-name: Check & Test
+name: Test, Lint & Audit
 
 on:
   schedule:
