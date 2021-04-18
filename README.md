@@ -22,37 +22,46 @@ You can find more information about using Rust from other languages in
 Creating FFIs to use a Rust's `struct` methods from C or C++:
 
 ```rust
-struct TestIt { value: u8 }
+struct Counter { value: u8 }
 
-impl TestIt {
+impl Counter {
+    pub fn new() -> Self { Self { value: 0 } }
     pub fn add(&mut self, value: u8) { self.value += value }
     pub fn get(&self) -> u8 { self.value }
 }
 
 /// Ownership will NOT control the heap-allocated memory until own it back.
 #[no_mangle]
-pub extern fn test_it_new(value: u8) -> *mut TestIt {
-    return opaque_pointer::raw(TestIt { value });
+pub extern fn counter_new(value: u8) -> *mut TestIt {
+    return opaque_pointer::raw(Counter::new());
 }
 
-/// Drop (free memory of) Rust's TestIt object as usually.
+/// Drop (free memory of) Rust's Counter object as usually.
 #[no_mangle]
-pub extern fn test_it_free(test_it: *mut TestIt) {
-    let test_it = unsafe { opaque_pointer::free(test_it) };
+pub extern fn counter_free(counter: *mut Counter) {
+    unsafe { opaque_pointer::free(counter) };
 }
 
 #[no_mangle]
-pub extern fn test_it_add(test_it: *mut TestIt, value: u8) -> Result<(), opaque_pointer::error::PointerError> {
-    let test_it = unsafe { opaque_pointer::mut_object(test_it)? };
-    test_it.add(value);
+pub extern fn counter_add(counter: *mut Counter, value: u8) -> boolean {
+    let counter = unsafe { opaque_pointer::mut_object(counter) };
+    if counter.is_err() {
+        return false;
+    }
+    let counter = counter.unwrap();
+    counter.add(value);
     // Here will NOT be dropped, the pointer continues been valid.
-    return Ok(());
+    return true;
 }
 
 #[no_mangle]
-pub extern fn test_it_get(test_it: *const TestIt) -> Result<u8, opaque_pointer::error::PointerError> {
-    let test_it = unsafe { opaque_pointer::object(test_it)? };
-    return Ok(test_it.get());
+pub extern fn counter_get(counter: *const Counter) -> u8  {
+    let counter = unsafe { opaque_pointer::object(counter) };
+    if counter.is_err() {
+        return 0;
+    }
+    let counter = counter.unwrap();
+    return counter.get();
     // Here will NOT be dropped, the pointer continues been valid.
 }
 ```
