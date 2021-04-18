@@ -44,18 +44,24 @@ pub fn raw<T>(data: T) -> *mut T {
     return Box::into_raw(Box::new(data));
 }
 
-#[deprecated(since = "0.7.2", note = "Use `own_back<T>()` instead")]
-#[cfg(any(feature = "alloc", feature = "std"))]
-#[inline]
-/// Call to `own_back<T>(pointer: *mut T)` ignoring the result.
+/// Call to [`own_back<T>()`] ignoring the result.
 ///
-/// This ignore null pointers without an error.
+/// This is deprecated and will be removed in the version 0.9.0 then you can do this:
+///
+/// ```no_run
+/// # let value = 0;
+/// # let pointer = opaque_pointer::raw(value);
+/// std::mem::drop(unsafe { opaque_pointer::own_back(pointer) });
+/// ```
 ///
 /// # Safety
 ///
-/// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
+/// See [`own_back<T>()`] reference doc.
+#[deprecated(since = "0.7.2", note = "Use own_back<T>() instead")]
+#[cfg(any(feature = "alloc", feature = "std"))]
+#[inline(always)]
 pub unsafe fn free<T>(pointer: *mut T) {
-    std::mem::drop(own_back(pointer));
+    std::mem::drop(own_back(pointer))
 }
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
