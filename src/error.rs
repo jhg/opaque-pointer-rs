@@ -1,6 +1,5 @@
 //! Opaque pointers errors.
 
-#[cfg(all(feature = "std", feature = "c-types"))]
 use std::str::Utf8Error;
 
 /// Errors that can be detected by the functions of this crate.
