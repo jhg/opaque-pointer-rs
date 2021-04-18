@@ -1,8 +1,6 @@
 name: Test, Lint & Audit
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
   push:
     branches: [ '*' ]
     paths:
@@ -20,6 +18,8 @@ on:
     - '**/Cargo.toml'
     - '**/Cargo.lock'
   # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 env:
