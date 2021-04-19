@@ -36,7 +36,7 @@ pub mod error;
 
 #[cfg(all(feature = "std", feature = "lender"))]
 lazy_static! {
-    static ref LENT: RwLock<HashSet<usize>> = { RwLock::new(HashSet::new()) };
+    static ref LENT: RwLock<HashSet<usize>> = RwLock::new(HashSet::new());
 }
 
 #[cfg(all(feature = "std", feature = "lender"))]
