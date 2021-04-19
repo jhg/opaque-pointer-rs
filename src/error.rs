@@ -9,7 +9,9 @@ use std::str::Utf8Error;
 #[derive(Debug)]
 pub enum PointerError {
     #[allow(missing_docs)] // Obviously, the name is the ref doc.
-    NulPointer,
+    Null,
+    /// A pointer that was not previously lent to the FFI user.
+    Invalid,
     /// Trying to convert to `&str` a C string which content is not valid UTF-8.
     Utf8Error(Utf8Error),
 }
@@ -17,8 +19,11 @@ pub enum PointerError {
 impl std::fmt::Display for PointerError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match *self {
-            Self::NulPointer => {
+            Self::Null => {
                 write!(f, "dereference a null pointer will produce a crash")
+            }
+            Self::Invalid => {
+                write!(f, "dereference a unknown pointer could produce a crash")
             }
             Self::Utf8Error(..) => {
                 write!(f, "the provided C string is not a valid UTF-8 string")
@@ -30,7 +35,8 @@ impl std::fmt::Display for PointerError {
 impl std::error::Error for PointerError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match *self {
-            Self::NulPointer => None,
+            Self::Null => None,
+            Self::Invalid => None,
             Self::Utf8Error(ref e) => Some(e),
         }
     }
