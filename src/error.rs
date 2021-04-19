@@ -6,7 +6,7 @@ use std::str::Utf8Error;
 ///
 /// Of course, invalid address can not be detected, then it's unsafe yet.
 #[allow(clippy::module_name_repetitions)] // Like std::error::Error, it is for pointer errors
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum PointerError {
     #[allow(missing_docs)] // Obviously, the name is the ref doc.
     Null,
