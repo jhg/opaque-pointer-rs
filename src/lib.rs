@@ -36,13 +36,13 @@ pub mod error;
 
 #[cfg(all(feature = "std", feature = "lender"))]
 lazy_static! {
-    static ref LENT: RwLock<HashSet<usize>> = RwLock::new(HashSet::new());
+    static ref LENT_POINTERS: RwLock<HashSet<usize>> = RwLock::new(HashSet::new());
 }
 
 #[cfg(all(feature = "std", feature = "lender"))]
 #[inline]
 fn invalid_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
-    if !LENT.read().unwrap().contains(&(pointer as usize)) {
+    if !LENT_POINTERS.read().unwrap().contains(&(pointer as usize)) {
         return Err(crate::error::PointerError::Invalid);
     }
     return Ok(());
@@ -65,7 +65,7 @@ fn null_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerErr
 pub fn raw<T>(data: T) -> *mut T {
     let pointer = Box::into_raw(Box::new(data));
     #[cfg(all(feature = "std", feature = "lender"))]
-    LENT.write().unwrap().insert(pointer as usize);
+    LENT_POINTERS.write().unwrap().insert(pointer as usize);
     return pointer;
 }
 
@@ -107,7 +107,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerErr
     invalid_error_check(pointer)?;
     let boxed = { Box::from_raw(pointer) };
     #[cfg(all(feature = "std", feature = "lender"))]
-    LENT.write().unwrap().remove(&(pointer as usize));
+    LENT_POINTERS.write().unwrap().remove(&(pointer as usize));
     return Ok(*boxed);
 }
 
