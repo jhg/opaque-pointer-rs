@@ -42,7 +42,13 @@ lazy_static! {
 #[cfg(all(feature = "std", feature = "lender"))]
 #[inline]
 fn invalid_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
-    if !LENT_POINTERS.read().unwrap().contains(&(pointer as usize)) {
+    if let Ok(lent_pointers) = LENT_POINTERS.read() {
+        if !lent_pointers.contains(&(pointer as usize)) {
+            log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
+            return Err(crate::error::PointerError::Invalid);
+        }
+    } else {
+        log::error!("RwLock poisoned, it is not possible to check pointers");
         return Err(crate::error::PointerError::Invalid);
     }
     return Ok(());
