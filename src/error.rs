@@ -35,8 +35,7 @@ impl std::fmt::Display for PointerError {
 impl std::error::Error for PointerError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match *self {
-            Self::Null => None,
-            Self::Invalid => None,
+            Self::Null | Self::Invalid => None,
             Self::Utf8Error(ref e) => Some(e),
         }
     }
