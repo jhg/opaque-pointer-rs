@@ -41,8 +41,11 @@ lazy_static! {
 
 #[cfg(all(feature = "std", feature = "lender"))]
 #[inline]
-fn is_lent<T>(pointer: *const T) -> bool {
-    return LENT.read().unwrap().contains(&(pointer as usize));
+fn invalid_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
+    if !LENT.read().unwrap().contains(&(pointer as usize)) {
+        return Err(crate::error::PointerError::Invalid);
+    }
+    return Ok(());
 }
 
 #[inline]
@@ -101,9 +104,7 @@ pub unsafe fn free<T>(pointer: *mut T) {
 pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerError> {
     null_error_check(pointer)?;
     #[cfg(all(feature = "std", feature = "lender"))]
-    if !is_lent(pointer) {
-        return Err(crate::error::PointerError::Invalid);
-    }
+    invalid_error_check(pointer)?;
     let boxed = { Box::from_raw(pointer) };
     #[cfg(all(feature = "std", feature = "lender"))]
     LENT.write().unwrap().remove(&(pointer as usize));
@@ -126,9 +127,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerErr
 pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::PointerError> {
     null_error_check(pointer)?;
     #[cfg(all(feature = "std", feature = "lender"))]
-    if !is_lent(pointer) {
-        return Err(crate::error::PointerError::Invalid);
-    }
+    invalid_error_check(pointer)?;
     return Ok(&*pointer);
 }
 
@@ -148,8 +147,6 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::Po
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, crate::error::PointerError> {
     null_error_check(pointer)?;
     #[cfg(all(feature = "std", feature = "lender"))]
-    if !is_lent(pointer) {
-        return Err(crate::error::PointerError::Invalid);
-    }
+    invalid_error_check(pointer)?;
     return Ok(&mut *pointer);
 }
