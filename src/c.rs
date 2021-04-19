@@ -1,4 +1,4 @@
-//! Specific for work with C types.
+//! Specific for C types.
 //!
 //! Available with the `c-types` feature.
 
