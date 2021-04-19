@@ -30,7 +30,7 @@ pub mod error;
 fn null_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
     if pointer.is_null() {
         log::error!("Using a NULL pointer as an opaque pointer to Rust's data");
-        return Err(crate::error::PointerError::NulPointer);
+        return Err(crate::error::PointerError::Null);
     }
     return Ok(());
 }
