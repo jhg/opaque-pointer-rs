@@ -17,6 +17,11 @@ You can find more information about using Rust from other languages in
  [The Rust FFI Omnibus objects section](http://jakegoulding.com/rust-ffi-omnibus/objects/)
  of [Jake Goulding](https://github.com/shepmaster).
 
+## Lender feature
+
+If you activate the feature `lender` the functions like `own_back<T>()` will check if the pointer is valid.
+It means, the function result will be a error if the pointer was not returned by `raw<T>()`.
+
 ## Examples
 
 Creating FFIs to use a Rust's `struct` methods from C or C++:

@@ -1,6 +1,6 @@
 [package]
 name = "opaque-pointer"
-version = "0.8.1"
+version = "0.8.2"
 description = "Generic functions to work with opaque pointers when use FFI to expose Rust structs"
 authors = ["Jesus Hernandez <jesushdez@protonmail.com>"]
 license = "Unlicense"
@@ -25,4 +25,4 @@ log = "^0"
 lazy_static = { version = "^1", optional = true }
 
 [package.metadata.docs.rs]
-features = ["std", "c-types"]
+features = ["std", "lender"]
