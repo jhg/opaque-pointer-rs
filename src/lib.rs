@@ -21,10 +21,29 @@ extern crate std;
 #[cfg(feature = "std")]
 use std::boxed::Box;
 
+#[cfg(all(feature = "std", feature = "lender"))]
+#[macro_use]
+extern crate lazy_static;
+#[cfg(all(feature = "std", feature = "lender"))]
+use std::collections::HashSet;
+#[cfg(all(feature = "std", feature = "lender"))]
+use std::sync::RwLock;
+
 #[cfg(all(feature = "std", feature = "c-types"))]
 pub mod c;
 
 pub mod error;
+
+#[cfg(all(feature = "std", feature = "lender"))]
+lazy_static! {
+    static ref LENT: RwLock<HashSet<usize>> = { RwLock::new(HashSet::new()) };
+}
+
+#[cfg(all(feature = "std", feature = "lender"))]
+#[inline]
+fn is_lent<T>(pointer: *const T) -> bool {
+    return LENT.read().unwrap().contains(&(pointer as usize));
+}
 
 #[inline]
 fn null_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
@@ -41,7 +60,10 @@ fn null_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerErr
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
-    return Box::into_raw(Box::new(data));
+    let pointer = Box::into_raw(Box::new(data));
+    #[cfg(all(feature = "std", feature = "lender"))]
+    LENT.write().unwrap().insert(pointer as usize);
+    return pointer;
 }
 
 /// Call to [`own_back<T>()`] ignoring the result.
@@ -78,8 +100,13 @@ pub unsafe fn free<T>(pointer: *mut T) {
 #[inline]
 pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerError> {
     null_error_check(pointer)?;
-    // CAUTION: this is the unsafe part of the function.
-    let boxed = Box::from_raw(pointer);
+    #[cfg(all(feature = "std", feature = "lender"))]
+    if !is_lent(pointer) {
+        return Err(crate::error::PointerError::Invalid);
+    }
+    let boxed = { Box::from_raw(pointer) };
+    #[cfg(all(feature = "std", feature = "lender"))]
+    LENT.write().unwrap().remove(&(pointer as usize));
     return Ok(*boxed);
 }
 
@@ -98,7 +125,10 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerErr
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::PointerError> {
     null_error_check(pointer)?;
-    // CAUTION: this is unsafe
+    #[cfg(all(feature = "std", feature = "lender"))]
+    if !is_lent(pointer) {
+        return Err(crate::error::PointerError::Invalid);
+    }
     return Ok(&*pointer);
 }
 
@@ -117,6 +147,9 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::Po
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, crate::error::PointerError> {
     null_error_check(pointer)?;
-    // CAUTION: this is unsafe
+    #[cfg(all(feature = "std", feature = "lender"))]
+    if !is_lent(pointer) {
+        return Err(crate::error::PointerError::Invalid);
+    }
     return Ok(&mut *pointer);
 }

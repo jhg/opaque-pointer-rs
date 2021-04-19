@@ -18,9 +18,11 @@ std = []
 alloc = []
 # Allow to use some FFI for C types
 c-types = ["std"]
+lender = ["lazy_static"]
 
 [dependencies]
 log = "^0"
+lazy_static = { version = "^1", optional = true }
 
 [package.metadata.docs.rs]
 features = ["std", "c-types"]
