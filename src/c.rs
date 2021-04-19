@@ -20,6 +20,7 @@ use crate::error::PointerError;
 /// # Errors
 ///
 /// If the C string is not a valid UTF-8 string.
+#[deprecated(since = "0.8.1", note = "Use std::ffi::CStr")]
 #[inline]
 pub unsafe fn ref_str<'a>(string: *const c_char) -> Result<&'a str, PointerError> {
     // ATTENTION! 'a lifetime is required, does NOT REMOVE it
