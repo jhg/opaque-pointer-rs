@@ -43,9 +43,9 @@ jobs:
     - name: Check
       run: cargo check --verbose
     - name: Tests
-      run: cargo test --verbose -- --show-output
+      run: cargo test --verbose --features lender -- --show-output
     - name: Ignored tests
-      run: cargo test --verbose -- --show-output --ignored
+      run: cargo test --verbose --features lender -- --show-output --ignored
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -81,9 +81,9 @@ jobs:
     - name: Check
       run: cargo check --verbose
     - name: Tests
-      run: cargo test --verbose -- --show-output
+      run: cargo test --verbose --features lender -- --show-output
     - name: Ignored tests
-      run: cargo test --verbose -- --show-output --ignored
+      run: cargo test --verbose --features lender -- --show-output --ignored
   nightly-lint:
     runs-on: ubuntu-latest
     timeout-minutes: 5
