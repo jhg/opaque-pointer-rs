@@ -112,7 +112,6 @@ pub unsafe fn free<T>(pointer: *mut T) {
 #[inline]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
-    #[cfg(all(feature = "std", feature = "lender"))]
     validate_pointer(pointer)?;
     let boxed = { Box::from_raw(pointer) };
     #[cfg(all(feature = "std", feature = "lender"))]
