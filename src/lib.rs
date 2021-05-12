@@ -33,32 +33,34 @@ use std::sync::RwLock;
 pub mod c;
 
 pub mod error;
+use error::PointerError;
 
 #[cfg(all(feature = "std", feature = "lender"))]
 lazy_static! {
     static ref LENT_POINTERS: RwLock<HashSet<usize>> = RwLock::new(HashSet::new());
 }
 
-#[cfg(all(feature = "std", feature = "lender"))]
 #[inline]
-fn invalid_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
-    if let Ok(lent_pointers) = LENT_POINTERS.read() {
-        if !lent_pointers.contains(&(pointer as usize)) {
-            log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
-            return Err(crate::error::PointerError::Invalid);
-        }
-    } else {
-        log::error!("RwLock poisoned, it is not possible to check pointers");
-        return Err(crate::error::PointerError::Invalid);
+fn validate_pointer_is_not_null<T>(pointer: *const T) -> Result<(), PointerError> {
+    if pointer.is_null() {
+        log::error!("Using a NULL pointer as an opaque pointer to Rust's data");
+        return Err(PointerError::Null);
     }
     return Ok(());
 }
 
 #[inline]
-fn null_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerError> {
-    if pointer.is_null() {
-        log::error!("Using a NULL pointer as an opaque pointer to Rust's data");
-        return Err(crate::error::PointerError::Null);
+fn validate_pointer<T>(pointer: *const T) -> Result<(), PointerError> {
+    validate_pointer_is_not_null(pointer)?;
+    #[cfg(all(feature = "std", feature = "lender"))]
+    if let Ok(lent_pointers) = LENT_POINTERS.read() {
+        if !lent_pointers.contains(&(pointer as usize)) {
+            log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
+            return Err(PointerError::Invalid);
+        }
+    } else {
+        log::error!("RwLock poisoned, it is not possible to check pointers");
+        return Err(PointerError::Invalid);
     }
     return Ok(());
 }
@@ -108,10 +110,10 @@ pub unsafe fn free<T>(pointer: *mut T) {
 #[doc(alias = "free")]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
-pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerError> {
-    null_error_check(pointer)?;
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
     #[cfg(all(feature = "std", feature = "lender"))]
-    invalid_error_check(pointer)?;
+    validate_pointer(pointer)?;
     let boxed = { Box::from_raw(pointer) };
     #[cfg(all(feature = "std", feature = "lender"))]
     LENT_POINTERS.write().unwrap().remove(&(pointer as usize));
@@ -128,10 +130,8 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerErr
 ///
 /// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
-pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::PointerError> {
-    null_error_check(pointer)?;
-    #[cfg(all(feature = "std", feature = "lender"))]
-    invalid_error_check(pointer)?;
+pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, PointerError> {
+    validate_pointer_is_not_null(pointer)?;
     return Ok(&*pointer);
 }
 
@@ -145,9 +145,7 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::Po
 ///
 /// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
-pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, crate::error::PointerError> {
-    null_error_check(pointer)?;
-    #[cfg(all(feature = "std", feature = "lender"))]
-    invalid_error_check(pointer)?;
+pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, PointerError> {
+    validate_pointer_is_not_null(pointer)?;
     return Ok(&mut *pointer);
 }
