@@ -44,6 +44,7 @@ fn immutable_reference() {
 }
 
 #[cfg(all(feature = "std", feature = "lender"))]
+#[ignore = "This test is not valid until decide how to make safe the temporal uses of lent memory"]
 #[test]
 fn immutable_reference_invalid_pointer() {
     let pointer = Box::into_raw(Box::new(TestIt::new(2)));
@@ -64,6 +65,7 @@ fn mutable_reference() {
 }
 
 #[cfg(all(feature = "std", feature = "lender"))]
+#[ignore = "This test is not valid until decide how to make safe the temporal uses of lent memory"]
 #[test]
 fn mutable_reference_invalid_pointer() {
     let pointer = Box::into_raw(Box::new(TestIt::new(2)));
