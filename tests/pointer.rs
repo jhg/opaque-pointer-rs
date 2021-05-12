@@ -43,18 +43,6 @@ fn immutable_reference() {
     unsafe { opaque_pointer::own_back(pointer).unwrap() };
 }
 
-#[cfg(all(feature = "std", feature = "lender"))]
-#[ignore = "This test is not valid until decide how to make safe the temporal uses of lent memory"]
-#[test]
-fn immutable_reference_invalid_pointer() {
-    let pointer = Box::into_raw(Box::new(TestIt::new(2)));
-    let invalid_pointer_error = unsafe { opaque_pointer::object(pointer).unwrap_err() };
-    assert_eq!(
-        invalid_pointer_error,
-        opaque_pointer::error::PointerError::Invalid
-    );
-}
-
 #[test]
 fn mutable_reference() {
     let pointer = opaque_pointer::raw(TestIt::new(2));
@@ -62,16 +50,4 @@ fn mutable_reference() {
     object.add(3);
     assert_eq!(object.get(), 5);
     unsafe { opaque_pointer::own_back(pointer).unwrap() };
-}
-
-#[cfg(all(feature = "std", feature = "lender"))]
-#[ignore = "This test is not valid until decide how to make safe the temporal uses of lent memory"]
-#[test]
-fn mutable_reference_invalid_pointer() {
-    let pointer = Box::into_raw(Box::new(TestIt::new(2)));
-    let invalid_pointer_error = unsafe { opaque_pointer::mut_object(pointer).unwrap_err() };
-    assert_eq!(
-        invalid_pointer_error,
-        opaque_pointer::error::PointerError::Invalid
-    );
 }
