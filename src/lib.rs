@@ -70,6 +70,7 @@ fn null_error_check<T>(pointer: *const T) -> Result<(), crate::error::PointerErr
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
     let pointer = Box::into_raw(Box::new(data));
+    // Use try_reserve in nightly until it is available in stable
     #[cfg(all(feature = "std", feature = "lender"))]
     LENT_POINTERS.write().unwrap().insert(pointer as usize);
     return pointer;
