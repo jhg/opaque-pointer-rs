@@ -118,10 +118,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerErr
     return Ok(*boxed);
 }
 
-/// Reference to a object but without back to own it.
-///
-/// That's the difference with [`own_back<T>()`], you must
-/// use [`own_back<T>()`] to own it again and it will be dropped.
+/// Reference to a object but without to own it.
 ///
 /// # Errors
 ///
@@ -129,7 +126,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, crate::error::PointerErr
 ///
 /// # Safety
 ///
-/// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
+/// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::PointerError> {
     null_error_check(pointer)?;
@@ -140,16 +137,13 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, crate::error::Po
 
 /// Mutable reference to a object but without back to own it.
 ///
-/// That's the difference with [`own_back<T>()`], you must
-/// use [`own_back<T>()`] to own it again and it will be dropped.
-///
 /// # Errors
 ///
 /// The pointer must be not null as it is an obvious invalid pointer.
 ///
 /// # Safety
 ///
-/// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
+/// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, crate::error::PointerError> {
     null_error_check(pointer)?;
