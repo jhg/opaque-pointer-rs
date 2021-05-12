@@ -7,7 +7,7 @@
 use std::ffi::CStr;
 use std::os::raw::c_char;
 
-use super::null_error_check;
+use super::validate_pointer_is_not_null;
 
 use crate::error::PointerError;
 
@@ -25,7 +25,7 @@ use crate::error::PointerError;
 pub unsafe fn ref_str<'a>(string: *const c_char) -> Result<&'a str, PointerError> {
     // ATTENTION! 'a lifetime is required, does NOT REMOVE it
     // see commit 5a03be91d2da8909986db7c54650f3a7863a91ff fixing 3a1d15f33e8e418ef6bee2b7b9e096780bd2c8ac
-    null_error_check(string)?;
+    validate_pointer_is_not_null(string)?;
     // CAUTION: this is unsafe
     let string = CStr::from_ptr(string);
     return Ok(string.to_str()?);
