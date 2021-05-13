@@ -1,7 +1,5 @@
-//! FFI opaque pointers.
-//!
-//! FFI to use Rust objects from C as opaque pointer.
-
+#![feature(extended_key_value_attributes)]
+#![doc = include_str!("../README.md")] // This also allow to run examples in that file.
 #![allow(unsafe_code)]
 #![warn(missing_docs)]
 #![warn(clippy::pedantic)]
