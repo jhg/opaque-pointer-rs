@@ -95,7 +95,7 @@ pub fn raw<T>(data: T) -> *mut T {
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
-    std::mem::drop(own_back(pointer))
+    std::mem::drop(own_back(pointer));
 }
 
 /// Opposite of [`raw<T>()`], to use Rust's ownership as usually.
