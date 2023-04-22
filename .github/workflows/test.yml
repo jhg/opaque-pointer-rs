@@ -31,6 +31,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         rust: [ stable, beta ]
+        features: [ 'std', 'alloc', 'std,lender', 'alloc,lender' ]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
     if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' && !endsWith(github.ref, '-nightly')
@@ -41,11 +42,11 @@ jobs:
         toolchain: ${{ matrix.rust }}
         override: true
     - name: Check
-      run: cargo check --verbose
+      run: cargo check --verbose --features ${{ matrix.features }} --no-default-features
     - name: Tests
-      run: cargo test --verbose --features lender -- --show-output
+      run: cargo test --verbose --features ${{ matrix.features }} --no-default-features -- --show-output
     - name: Ignored tests
-      run: cargo test --verbose --features lender -- --show-output --ignored
+      run: cargo test --verbose --features ${{ matrix.features }} --no-default-features -- --show-output --ignored
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 5
