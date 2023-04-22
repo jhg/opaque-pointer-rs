@@ -32,6 +32,7 @@ impl core::fmt::Display for PointerError {
     }
 }
 
+#[cfg(feature = "std")] // Waiting for https://github.com/rust-lang/rust/issues/103765
 impl std::error::Error for PointerError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match *self {
