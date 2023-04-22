@@ -34,7 +34,7 @@ jobs:
         features: [ 'std', 'alloc', 'std,lender', 'alloc,lender' ]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
-    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' && !endsWith(github.ref, '-nightly')
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' && !endsWith(github.ref, '-nightly') && !endsWith(github.head_ref, '-nightly')
     steps:
     - uses: actions/checkout@v2
     - uses: actions-rs/toolchain@v1
@@ -50,7 +50,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' && !endsWith(github.ref, '-nightly') && !contains(github.ref, 'refs/tags/v')
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' && !endsWith(github.ref, '-nightly') && !endsWith(github.head_ref, '-nightly') && !contains(github.ref, 'refs/tags/v')
     steps:
     - uses: actions/checkout@v2
     - uses: actions-rs/toolchain@v1
