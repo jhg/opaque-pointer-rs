@@ -1,6 +1,6 @@
 //! Opaque pointers errors.
 
-use std::str::Utf8Error;
+use core::str::Utf8Error;
 
 /// Errors that can be detected by the functions of this crate.
 ///
@@ -16,8 +16,8 @@ pub enum PointerError {
     Utf8Error(Utf8Error),
 }
 
-impl std::fmt::Display for PointerError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl core::fmt::Display for PointerError {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         match *self {
             Self::Null => {
                 write!(f, "dereference a null pointer will produce a crash")
