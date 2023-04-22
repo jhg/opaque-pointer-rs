@@ -21,7 +21,7 @@ c-types = ["std"]
 lender = ["lazy_static"]
 
 [dependencies]
-log = "^0"
+log = "0.4"
 lazy_static = { version = "^1", optional = true }
 
 [package.metadata.docs.rs]
