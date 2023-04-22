@@ -1,6 +1,6 @@
 [package]
 name = "opaque-pointer"
-version = "0.8.7"
+version = "0.8.8"
 description = "Generic functions to work with opaque pointers when use FFI to expose Rust structs"
 authors = ["Jesus Hernandez <jesushdez@protonmail.com>"]
 license = "Unlicense"
