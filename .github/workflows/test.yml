@@ -7,16 +7,16 @@ on:
     - '.github/workflows/*.yml'
     - '**/*.rs'
     - '**/*.md' # Test examples in markdowns included as API doc
-    - '**/Cargo.toml'
-    - '**/Cargo.lock'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
   pull_request:
     branches: [ '*' ]
     paths:
     - '.github/workflows/*.yml'
     - '**/*.rs'
     - '**/*.md' # Test examples in markdowns included as API doc
-    - '**/Cargo.toml'
-    - '**/Cargo.lock'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
   # Allows you to run this workflow manually from the Actions tab
   schedule:
     - cron: '0 0 * * *'
