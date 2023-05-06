@@ -13,7 +13,7 @@
     "hbenl.vscode-test-explorer",
     "jscearcy.rust-doc-viewer",
     "kevinkassimo.cargo-toml-snippets",
-    "matklad.rust-analyzer",
+    "rust-lang.rust-analyzer",
     "serayuzgur.crates",
     "streetsidesoftware.code-spell-checker",
     "swellaby.vscode-rust-test-adapter",
