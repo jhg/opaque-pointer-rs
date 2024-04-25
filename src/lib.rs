@@ -18,14 +18,6 @@ extern crate std;
 #[cfg(feature = "std")]
 use std::boxed::Box;
 
-#[cfg(all(feature = "std", feature = "lender"))]
-#[macro_use]
-extern crate lazy_static;
-#[cfg(all(feature = "std", feature = "lender"))]
-use std::collections::HashSet;
-#[cfg(all(feature = "std", feature = "lender"))]
-use std::sync::RwLock;
-
 #[cfg(all(feature = "std", feature = "c-types"))]
 pub mod c;
 
@@ -33,9 +25,7 @@ pub mod error;
 use error::PointerError;
 
 #[cfg(all(feature = "std", feature = "lender"))]
-lazy_static! {
-    static ref LENT_POINTERS: RwLock<HashSet<usize>> = RwLock::new(HashSet::new());
-}
+mod lender;
 
 #[inline]
 fn validate_pointer_is_not_null<T>(pointer: *const T) -> Result<(), PointerError> {
@@ -50,13 +40,8 @@ fn validate_pointer_is_not_null<T>(pointer: *const T) -> Result<(), PointerError
 fn validate_pointer<T>(pointer: *const T) -> Result<(), PointerError> {
     validate_pointer_is_not_null(pointer)?;
     #[cfg(all(feature = "std", feature = "lender"))]
-    if let Ok(lent_pointers) = LENT_POINTERS.read() {
-        if !lent_pointers.contains(&(pointer as usize)) {
-            log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
-            return Err(PointerError::Invalid);
-        }
-    } else {
-        log::error!("RwLock poisoned, it is not possible to check pointers");
+    if !lender::is_lent(pointer) {
+        log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
         return Err(PointerError::Invalid);
     }
     return Ok(());
@@ -69,9 +54,8 @@ fn validate_pointer<T>(pointer: *const T) -> Result<(), PointerError> {
 #[inline]
 pub fn raw<T>(data: T) -> *mut T {
     let pointer = Box::into_raw(Box::new(data));
-    // Use try_reserve in nightly until it is available in stable
     #[cfg(all(feature = "std", feature = "lender"))]
-    LENT_POINTERS.write().unwrap().insert(pointer as usize);
+    lender::lend(pointer);
     return pointer;
 }
 
@@ -112,7 +96,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
     validate_pointer(pointer)?;
     let boxed = { Box::from_raw(pointer) };
     #[cfg(all(feature = "std", feature = "lender"))]
-    LENT_POINTERS.write().unwrap().remove(&(pointer as usize));
+    lender::retrieve(pointer);
     return Ok(*boxed);
 }
 
