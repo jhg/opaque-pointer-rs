@@ -40,7 +40,7 @@ pub extern fn counter_new(value: u8) -> *mut Counter {
 /// Drop (free memory of) Rust's Counter object as usually.
 #[no_mangle]
 pub extern fn counter_free(counter: *mut Counter) {
-    unsafe { opaque_pointer::free(counter) };
+    unsafe { opaque_pointer::own_back(counter) };
 }
 
 #[no_mangle]
