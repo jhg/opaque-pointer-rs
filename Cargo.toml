@@ -17,11 +17,11 @@ exclude = [".github/**", ".vscode/**"]
 [features]
 default = ["std"]
 std = []
-# If you does not use std then you need alloc feature
+lender = ["lazy_static"]
+# If you do not use std then you need alloc feature
 alloc = []
 # Allow to use some FFI for C types
 c-types = ["std"]
-lender = ["lazy_static"]
 
 [dependencies]
 log = "0.4"
