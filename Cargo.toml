@@ -2,7 +2,10 @@
 name = "opaque-pointer"
 version = "0.8.8"
 description = "Generic functions to work with opaque pointers when use FFI to expose Rust structs"
-authors = ["Jesus Hernandez <jesushdez@protonmail.com>"]
+authors = [
+    "Jesus Hernandez <jesushdez@protonmail.com>",
+    "Dylan DPC",
+]
 license = "Unlicense"
 keywords = ["pointer", "opaque", "pointers", "cbindgen", "ffi"]
 categories = ["development-tools::ffi", "no-std"]
