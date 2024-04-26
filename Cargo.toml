@@ -12,7 +12,11 @@ categories = ["development-tools::ffi", "no-std"]
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/jhg/opaque-pointer-rs/"
-exclude = [".github/**", ".vscode/**"]
+exclude = [
+    ".github/**",
+    ".vscode/**",
+]
+rust-version = "1.57.0" # For HashSet::try_reserve
 
 [features]
 default = ["std"]
