@@ -15,6 +15,8 @@ repository = "https://github.com/jhg/opaque-pointer-rs/"
 exclude = [
     ".github/**",
     ".vscode/**",
+    ".idea/**",
+    "tests/**", # To reduce the package size, as tests are not needed to use it.
 ]
 rust-version = "1.57.0" # For HashSet::try_reserve
 
