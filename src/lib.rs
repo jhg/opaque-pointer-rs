@@ -96,7 +96,7 @@ pub unsafe fn free<T>(pointer: *mut T) {
 #[inline]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
-    validate_pointer(pointer)?;
+    validation::lent_pointer(pointer)?;
     let boxed = { Box::from_raw(pointer) };
     #[cfg(all(feature = "std", feature = "lender"))]
     lender::retrieve(pointer);
@@ -114,7 +114,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
 /// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, PointerError> {
-    validate_pointer_is_not_null(pointer)?;
+    validation::not_null_pointer(pointer)?;
     return Ok(&*pointer);
 }
 
@@ -129,6 +129,6 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, PointerError> {
 /// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, PointerError> {
-    validate_pointer_is_not_null(pointer)?;
+    validation::not_null_pointer(pointer)?;
     return Ok(&mut *pointer);
 }
