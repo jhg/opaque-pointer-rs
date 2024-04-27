@@ -1,5 +1,10 @@
 #![cfg(all(feature = "std", feature = "lender"))]
 
+//! # Lender of Rust's memory by FFI
+//!
+//! To control that pointers at least were returned by [`crate::raw`]. But
+//! it can not ensure if type is correct, yet.
+
 use lazy_static::lazy_static;
 use std::collections::HashSet;
 use std::sync::{RwLock, RwLockWriteGuard};
@@ -8,7 +13,7 @@ lazy_static! {
     static ref LENT_POINTERS: RwLock<HashSet<usize>> = RwLock::new(HashSet::new());
 }
 
-/// Check if a pointer was lent.
+/// Check if a pointer was [`lent`](lend).
 ///
 /// # Panics
 ///
@@ -23,7 +28,7 @@ pub(super) fn is_lent<T>(pointer: *const T) -> bool {
     return lent_pointers.contains(&(pointer as usize));
 }
 
-/// Add a pointer to the list.
+/// Use only when lend memory as a [`raw`](crate::raw) pointer.
 ///
 /// # Panics
 ///
@@ -35,7 +40,7 @@ pub(super) fn lend<T>(pointer: *const T) {
     writable_lent_pointers().insert(pointer as usize);
 }
 
-/// Remove a pointer from the list.
+/// Use only when [`own_back`](crate::own_back) memory.
 ///
 /// # Panics
 ///
