@@ -1,4 +1,5 @@
 use crate::error::PointerError;
+#[cfg(all(feature = "std", feature = "lender"))]
 use crate::lender;
 
 #[inline]
