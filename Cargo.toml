@@ -7,7 +7,7 @@ authors = [
     "Dylan DPC",
 ]
 license = "Unlicense"
-keywords = ["pointer", "opaque", "pointers", "cbindgen", "ffi"]
+keywords = ["opaque", "pointers", "cbindgen", "ffi", "no_std"]
 categories = ["development-tools::ffi", "no-std"]
 edition = "2021"
 readme = "README.md"
