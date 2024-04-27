@@ -17,7 +17,7 @@ lazy_static! {
 ///
 /// # Panics
 ///
-/// If the RwLock used is poisoned, but it only happens if a panic happens
+/// If the [`RwLock`] used is poisoned, but it only happens if a panic happens
 /// while holding it. And it's specially reviewed and in a small module to
 /// avoid panics while holding it.
 pub(super) fn is_lent<T>(pointer: *const T) -> bool {
@@ -32,7 +32,7 @@ pub(super) fn is_lent<T>(pointer: *const T) -> bool {
 ///
 /// # Panics
 ///
-/// If the RwLock used is poisoned, but it only happens if a panic happens
+/// If the [`RwLock`] used is poisoned, but it only happens if a panic happens
 /// while holding it. And it's specially reviewed and in a small module to
 /// avoid panics while holding it.
 pub(super) fn lend<T>(pointer: *const T) {
@@ -44,7 +44,7 @@ pub(super) fn lend<T>(pointer: *const T) {
 ///
 /// # Panics
 ///
-/// If the RwLock used is poisoned, but it only happens if a panic happens
+/// If the [`RwLock`] used is poisoned, but it only happens if a panic happens
 /// while holding it. And it's specially reviewed and in a small module to
 /// avoid panics while holding it.
 pub(super) fn retrieve<T>(pointer: *const T) {
