@@ -1,8 +1,8 @@
 //! Opaque pointers errors.
 
-use core::str::Utf8Error;
 #[cfg(all(feature = "alloc", not(feature = "std")))]
 use alloc::collections::TryReserveError;
+use core::str::Utf8Error;
 #[cfg(feature = "std")]
 use std::collections::TryReserveError;
 
@@ -33,7 +33,10 @@ impl core::fmt::Display for PointerError {
                 write!(f, "dereference a unknown pointer could produce a crash")
             }
             Self::Utf8Error(error) => {
-                write!(f, "the provided C string is not a valid UTF-8 string: {error}")
+                write!(
+                    f,
+                    "the provided C string is not a valid UTF-8 string: {error}"
+                )
             }
             #[cfg(any(feature = "alloc", feature = "std"))]
             Self::TryReserveError(error) => {
