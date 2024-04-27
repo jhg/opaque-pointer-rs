@@ -51,7 +51,7 @@ pub(super) fn retrieve<T>(pointer: *const T) {
     writable_lent_pointers().remove(&(pointer as usize));
 }
 
-fn writable_lent_pointers() -> RwLockWriteGuard<'_, HashSet<usize>> {
+fn writable_lent_pointers() -> RwLockWriteGuard<'static, HashSet<usize>> {
     let Ok(lent_pointers) = LENT_POINTERS.write() else {
         log::error!("RwLock poisoned, it is not possible to add or remove pointers");
         unreachable!("RwLock poisoned when there is not panics in code that can hold it");
