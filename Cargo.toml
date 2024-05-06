@@ -21,7 +21,7 @@ exclude = [
 rust-version = "1.57.0" # For HashSet::try_reserve
 
 [features]
-default = ["std"]
+default = ["std", "lender"]
 std = []
 lender = ["lazy_static"]
 # If you do not use std then you need alloc feature
