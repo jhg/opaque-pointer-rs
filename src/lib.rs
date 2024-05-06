@@ -34,11 +34,11 @@ mod validation;
 /// To back to manage the memory with ownership use [`own_back<T>()`].
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
-pub fn raw<T>(data: T) -> *mut T {
+pub fn raw<T>(data: T) -> Result<*mut T, PointerError> {
     let pointer = Box::into_raw(Box::new(data));
     #[cfg(all(feature = "std", feature = "lender"))]
-    lender::lend(pointer);
-    return pointer;
+    lender::lend(pointer)?;
+    return Ok(pointer);
 }
 
 /// Call to [`own_back<T>()`] ignoring the result.
@@ -47,7 +47,7 @@ pub fn raw<T>(data: T) -> *mut T {
 ///
 /// ```no_run
 /// # let value = 0;
-/// # let pointer = opaque_pointer::raw(value);
+/// # let pointer = opaque_pointer::raw(value).unwrap();
 /// std::mem::drop(unsafe { opaque_pointer::own_back(pointer) });
 /// ```
 ///

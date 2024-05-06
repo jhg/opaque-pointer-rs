@@ -34,7 +34,8 @@ impl Counter {
 /// Ownership will NOT control the heap-allocated memory until own it back.
 #[no_mangle]
 pub extern fn counter_new(value: u8) -> *mut Counter {
-    return opaque_pointer::raw(Counter::new());
+    return opaque_pointer::raw(Counter::new())
+            .expect("Error trying to lend a pointer");
 }
 
 /// Drop (free memory of) Rust's Counter object as usually.
