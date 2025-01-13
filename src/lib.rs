@@ -32,6 +32,10 @@ mod validation;
 /// Get a heap-allocated raw pointer without ownership.
 ///
 /// To back to manage the memory with ownership use [`own_back<T>()`].
+///
+/// # Errors
+///
+/// If the allocator reports a failure, then an error is returned.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub fn raw<T>(data: T) -> Result<*mut T, PointerError> {
