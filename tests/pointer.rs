@@ -1,7 +1,6 @@
 use opaque_pointer;
 use opaque_pointer::error::PointerError;
 
-
 #[derive(Debug)]
 struct TestIt {
     value: u8,
@@ -19,7 +18,6 @@ impl TestIt {
     }
 }
 
-
 #[test]
 fn own_back() {
     let pointer = opaque_pointer::raw(TestIt::new(2)).unwrap();
@@ -32,10 +30,7 @@ fn own_back() {
 fn own_back_invalid_pointer() {
     let pointer = Box::into_raw(Box::new(TestIt::new(2)));
     let error = unsafe { opaque_pointer::own_back(pointer).unwrap_err() };
-    assert_eq!(
-        error,
-        PointerError::Invalid
-    );
+    assert_eq!(error, PointerError::Invalid);
 }
 
 #[cfg(all(feature = "std", feature = "lender"))]
@@ -43,14 +38,10 @@ fn own_back_invalid_pointer() {
 fn own_back_invalid_type() {
     let pointer = opaque_pointer::raw(TestIt::new(2)).unwrap() as *mut u8;
     let error = unsafe { opaque_pointer::own_back(pointer).unwrap_err() };
-    assert_eq!(
-        error,
-        PointerError::InvalidType
-    );
+    assert_eq!(error, PointerError::InvalidType);
 
     unsafe { opaque_pointer::own_back(pointer as *mut TestIt).unwrap() };
 }
-
 
 #[test]
 fn immutable_reference() {
@@ -60,7 +51,6 @@ fn immutable_reference() {
 
     unsafe { opaque_pointer::own_back(pointer).unwrap() };
 }
-
 
 #[test]
 fn mutable_reference() {
