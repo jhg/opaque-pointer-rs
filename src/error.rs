@@ -28,9 +28,7 @@ impl core::fmt::Display for PointerError {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         match self {
             Self::Null => write!(f, "dereference a null pointer will produce a crash"),
-            #[cfg(all(feature = "std", feature = "lender"))]
             Self::Invalid => write!(f, "dereference a unknown pointer could produce a crash"),
-            #[cfg(all(feature = "std", feature = "lender"))]
             Self::InvalidType => write!(
                 f,
                 "dereference a pointer with a different type could produce errors"
