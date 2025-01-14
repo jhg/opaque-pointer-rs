@@ -32,7 +32,7 @@ mod validation;
 /// If the allocator reports a failure, then an error is returned.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
-pub fn raw<T>(data: T) -> Result<*mut T, PointerError> {
+pub fn raw<T: 'static>(data: T) -> Result<*mut T, PointerError> {
     let pointer = Box::into_raw(Box::new(data));
 
     #[cfg(all(feature = "std", feature = "lender"))]
@@ -53,13 +53,16 @@ pub fn raw<T>(data: T) -> Result<*mut T, PointerError> {
 ///
 /// The pointer must be not null as it is an obvious invalid pointer.
 ///
+/// Also, the type must be the same as the original.
+///
 /// # Safety
 ///
 /// Invalid pointer or call it twice could cause an undefined behavior or heap error and a crash.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
-pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
+pub unsafe fn own_back<T: 'static>(pointer: *mut T) -> Result<T, PointerError> {
+    validation::not_null_pointer(pointer)?;
     validation::lent_pointer(pointer)?;
     let boxed = { Box::from_raw(pointer) };
 
@@ -84,7 +87,7 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, PointerError> {
     Ok(&*pointer)
 }
 
-/// Mutable reference to a object but without back to own it.
+/// Mutable reference to an object but without back to own it.
 ///
 /// # Errors
 ///

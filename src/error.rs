@@ -16,6 +16,9 @@ pub enum PointerError {
     /// A pointer that was not previously lent to the FFI user.
     #[cfg(all(feature = "std", feature = "lender"))]
     Invalid,
+    /// A pointer previously lent but the type is not the same.
+    #[cfg(all(feature = "std", feature = "lender"))]
+    InvalidType,
     /// Trying to convert to `&str` a C string which content is not valid UTF-8.
     Utf8Error(Utf8Error),
     /// Trying to alloc memory, see [`alloc::collections::TryReserveError`].
@@ -28,6 +31,11 @@ impl core::fmt::Display for PointerError {
         match self {
             Self::Null => write!(f, "dereference a null pointer will produce a crash"),
             Self::Invalid => write!(f, "dereference a unknown pointer could produce a crash"),
+            #[cfg(all(feature = "std", feature = "lender"))]
+            Self::InvalidType => write!(
+                f,
+                "dereference a pointer with a different type could produce errors"
+            ),
             Self::Utf8Error(error) => write!(
                 f,
                 "the provided C string is not a valid UTF-8 string: {error}"
@@ -44,7 +52,7 @@ impl core::fmt::Display for PointerError {
 impl std::error::Error for PointerError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
-            Self::Null | Self::Invalid => None,
+            Self::Null | Self::Invalid | Self::InvalidType => None,
             Self::Utf8Error(error) => Some(error),
             Self::TryReserveError(error) => Some(error),
         }

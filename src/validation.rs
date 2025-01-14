@@ -13,14 +13,17 @@ pub fn not_null_pointer<T>(pointer: *const T) -> Result<(), PointerError> {
 }
 
 #[inline]
-pub fn lent_pointer<T>(pointer: *const T) -> Result<(), PointerError> {
-    not_null_pointer(pointer)?;
-
+pub fn lent_pointer<T: 'static>(pointer: *const T) -> Result<(), PointerError> {
     #[cfg(all(feature = "std", feature = "lender"))]
-    if !lender::is_lent(pointer) {
-        log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
-        return Err(PointerError::Invalid);
+    match lender::lent_type_of(pointer) {
+        Some(type_id) if type_id != std::any::TypeId::of::<T>() => {
+            log::error!("Using a pointer with a different type as an opaque pointer to Rust's data");
+            Err(PointerError::InvalidType)
+        }
+        None => {
+            log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
+            Err(PointerError::Invalid)
+        }
+        _ => Ok(()),
     }
-
-    Ok(())
 }
