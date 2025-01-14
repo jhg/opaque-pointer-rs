@@ -18,14 +18,6 @@ extern crate std;
 #[cfg(feature = "std")]
 use std::boxed::Box;
 
-#[cfg(all(feature = "std", feature = "lender"))]
-#[macro_use]
-extern crate lazy_static;
-#[cfg(all(feature = "std", feature = "lender"))]
-use std::collections::HashSet;
-#[cfg(all(feature = "std", feature = "lender"))]
-use std::sync::RwLock;
-
 #[cfg(all(feature = "std", feature = "c-types"))]
 pub mod c;
 
@@ -33,46 +25,24 @@ pub mod error;
 use error::PointerError;
 
 #[cfg(all(feature = "std", feature = "lender"))]
-lazy_static! {
-    static ref LENT_POINTERS: RwLock<HashSet<usize>> = RwLock::new(HashSet::new());
-}
+mod lender;
 
-#[inline]
-fn validate_pointer_is_not_null<T>(pointer: *const T) -> Result<(), PointerError> {
-    if pointer.is_null() {
-        log::error!("Using a NULL pointer as an opaque pointer to Rust's data");
-        return Err(PointerError::Null);
-    }
-    return Ok(());
-}
-
-#[inline]
-fn validate_pointer<T>(pointer: *const T) -> Result<(), PointerError> {
-    validate_pointer_is_not_null(pointer)?;
-    #[cfg(all(feature = "std", feature = "lender"))]
-    if let Ok(lent_pointers) = LENT_POINTERS.read() {
-        if !lent_pointers.contains(&(pointer as usize)) {
-            log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
-            return Err(PointerError::Invalid);
-        }
-    } else {
-        log::error!("RwLock poisoned, it is not possible to check pointers");
-        return Err(PointerError::Invalid);
-    }
-    return Ok(());
-}
+mod validation;
 
 /// Get a heap-allocated raw pointer without ownership.
 ///
 /// To back to manage the memory with ownership use [`own_back<T>()`].
+///
+/// # Errors
+///
+/// If the allocator reports a failure, then an error is returned.
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
-pub fn raw<T>(data: T) -> *mut T {
+pub fn raw<T>(data: T) -> Result<*mut T, PointerError> {
     let pointer = Box::into_raw(Box::new(data));
-    // Use try_reserve in nightly until it is available in stable
     #[cfg(all(feature = "std", feature = "lender"))]
-    LENT_POINTERS.write().unwrap().insert(pointer as usize);
-    return pointer;
+    lender::lend(pointer)?;
+    return Ok(pointer);
 }
 
 /// Call to [`own_back<T>()`] ignoring the result.
@@ -81,14 +51,17 @@ pub fn raw<T>(data: T) -> *mut T {
 ///
 /// ```no_run
 /// # let value = 0;
-/// # let pointer = opaque_pointer::raw(value);
+/// # let pointer = opaque_pointer::raw(value).unwrap();
 /// std::mem::drop(unsafe { opaque_pointer::own_back(pointer) });
 /// ```
 ///
 /// # Safety
 ///
 /// See [`own_back<T>()`] reference doc.
-#[deprecated(since = "0.7.2", note = "Use own_back<T>() instead")]
+#[deprecated(
+    since = "0.7.2",
+    note = "Use own_back<T>() instead, it'll be removed at version 0.9.0"
+)]
 #[cfg(any(feature = "alloc", feature = "std"))]
 #[inline]
 pub unsafe fn free<T>(pointer: *mut T) {
@@ -109,10 +82,10 @@ pub unsafe fn free<T>(pointer: *mut T) {
 #[inline]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
-    validate_pointer(pointer)?;
+    validation::lent_pointer(pointer)?;
     let boxed = { Box::from_raw(pointer) };
     #[cfg(all(feature = "std", feature = "lender"))]
-    LENT_POINTERS.write().unwrap().remove(&(pointer as usize));
+    lender::retrieve(pointer);
     return Ok(*boxed);
 }
 
@@ -127,7 +100,7 @@ pub unsafe fn own_back<T>(pointer: *mut T) -> Result<T, PointerError> {
 /// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, PointerError> {
-    validate_pointer_is_not_null(pointer)?;
+    validation::not_null_pointer(pointer)?;
     return Ok(&*pointer);
 }
 
@@ -142,6 +115,6 @@ pub unsafe fn object<'a, T>(pointer: *const T) -> Result<&'a T, PointerError> {
 /// Invalid pointer could cause an undefined behavior or heap error and a crash.
 #[inline]
 pub unsafe fn mut_object<'a, T>(pointer: *mut T) -> Result<&'a mut T, PointerError> {
-    validate_pointer_is_not_null(pointer)?;
+    validation::not_null_pointer(pointer)?;
     return Ok(&mut *pointer);
 }
