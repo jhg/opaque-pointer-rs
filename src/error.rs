@@ -9,12 +9,12 @@ use std::collections::TryReserveError;
 /// Errors that can be detected by the functions of this crate.
 ///
 /// Of course, invalid address can not be detected, then it's unsafe yet.
-#[allow(clippy::module_name_repetitions)] // Like std::error::Error, it is for pointer errors
 #[derive(Debug, PartialEq, Eq)]
 pub enum PointerError {
-    #[allow(missing_docs)] // Obviously, the name is the ref doc.
+    // Obviously, the name is the ref doc.
     Null,
     /// A pointer that was not previously lent to the FFI user.
+    #[cfg(all(feature = "std", feature = "lender"))]
     Invalid,
     /// Trying to convert to `&str` a C string which content is not valid UTF-8.
     Utf8Error(Utf8Error),
@@ -26,18 +26,12 @@ pub enum PointerError {
 impl core::fmt::Display for PointerError {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         match self {
-            Self::Null => {
-                write!(f, "dereference a null pointer will produce a crash")
-            }
-            Self::Invalid => {
-                write!(f, "dereference a unknown pointer could produce a crash")
-            }
-            Self::Utf8Error(error) => {
-                write!(
-                    f,
-                    "the provided C string is not a valid UTF-8 string: {error}"
-                )
-            }
+            Self::Null => write!(f, "dereference a null pointer will produce a crash"),
+            Self::Invalid => write!(f, "dereference a unknown pointer could produce a crash"),
+            Self::Utf8Error(error) => write!(
+                f,
+                "the provided C string is not a valid UTF-8 string: {error}"
+            ),
             #[cfg(any(feature = "alloc", feature = "std"))]
             Self::TryReserveError(error) => {
                 write!(f, "can not alloc memory of internal usage: {error}")

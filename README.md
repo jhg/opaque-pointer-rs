@@ -1,6 +1,6 @@
 # Opaque Pointer for seamless Rust FFI
 
-Harnessing generics with opaque pointers for seamless Rust FFI interoperability with C and C++
+Harnessing generics with opaque pointers for seamless Rust FFI interoperability with C and C++.
 
 [![Crates.io](https://img.shields.io/crates/v/opaque-pointer)](https://crates.io/crates/opaque-pointer)
 [![Crates.io](https://img.shields.io/crates/l/opaque-pointer)](https://unlicense.org/)

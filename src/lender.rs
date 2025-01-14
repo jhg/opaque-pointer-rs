@@ -1,10 +1,5 @@
 #![cfg(all(feature = "std", feature = "lender"))]
 
-//! # Lender of Rust's memory by FFI
-//!
-//! To control that pointers at least were returned by [`crate::raw`]. But
-//! it can not ensure if type is correct, yet.
-
 use lazy_static::lazy_static;
 use std::collections::HashSet;
 use std::sync::{RwLock, RwLockWriteGuard};
@@ -25,7 +20,7 @@ lazy_static! {
 pub(super) fn is_lent<T>(pointer: *const T) -> bool {
     let Ok(lent_pointers) = LENT_POINTERS.read() else {
         log::error!("RwLock poisoned, it is not possible to check pointers");
-        unreachable!("RwLock poisoned when there is not panics in code that can hold it");
+        unreachable!();
     };
     return lent_pointers.contains(&(pointer as usize));
 }
@@ -39,6 +34,7 @@ pub(super) fn is_lent<T>(pointer: *const T) -> bool {
 /// avoid panics while holding it.
 pub(super) fn lend<T>(pointer: *const T) -> Result<(), PointerError> {
     let mut lent_pointers = writable_lent_pointers();
+
     if let Err(error) = lent_pointers.try_reserve(1) {
         log::error!("Can not alloc memory to lent a pointer: {error}");
         return Err(PointerError::from(error));
@@ -61,7 +57,8 @@ pub(super) fn retrieve<T>(pointer: *const T) {
 fn writable_lent_pointers() -> RwLockWriteGuard<'static, HashSet<usize>> {
     let Ok(lent_pointers) = LENT_POINTERS.write() else {
         log::error!("RwLock poisoned, it is not possible to add or remove pointers");
-        unreachable!("RwLock poisoned when there is not panics in code that can hold it");
+        unreachable!();
     };
-    return lent_pointers;
+
+    lent_pointers
 }

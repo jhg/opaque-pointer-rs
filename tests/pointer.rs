@@ -1,4 +1,5 @@
 use opaque_pointer;
+use opaque_pointer::error::PointerError;
 
 #[derive(Debug)]
 struct TestIt {
@@ -28,10 +29,10 @@ fn own_back() {
 #[test]
 fn own_back_invalid_pointer() {
     let pointer = Box::into_raw(Box::new(TestIt::new(2)));
-    let invalid_pointer_error = unsafe { opaque_pointer::own_back(pointer).unwrap_err() };
+    let error = unsafe { opaque_pointer::own_back(pointer).unwrap_err() };
     assert_eq!(
-        invalid_pointer_error,
-        opaque_pointer::error::PointerError::Invalid
+        error,
+        PointerError::Invalid
     );
 }
 
@@ -40,6 +41,7 @@ fn immutable_reference() {
     let pointer = opaque_pointer::raw(TestIt::new(2)).unwrap();
     let object = unsafe { opaque_pointer::object(pointer).unwrap() };
     assert_eq!(object.get(), 2);
+
     unsafe { opaque_pointer::own_back(pointer).unwrap() };
 }
 
@@ -49,5 +51,6 @@ fn mutable_reference() {
     let object = unsafe { opaque_pointer::mut_object(pointer).unwrap() };
     object.add(3);
     assert_eq!(object.get(), 5);
+
     unsafe { opaque_pointer::own_back(pointer).unwrap() };
 }
