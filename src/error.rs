@@ -14,10 +14,8 @@ pub enum PointerError {
     // Obviously, the name is the ref doc.
     Null,
     /// A pointer that was not previously lent to the FFI user.
-    #[cfg(all(feature = "std", feature = "lender"))]
     Invalid,
     /// A pointer previously lent but the type is not the same.
-    #[cfg(all(feature = "std", feature = "lender"))]
     InvalidType,
     /// Trying to convert to `&str` a C string which content is not valid UTF-8.
     Utf8Error(Utf8Error),
