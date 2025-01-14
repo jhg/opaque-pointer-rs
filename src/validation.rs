@@ -14,6 +14,8 @@ pub fn not_null_pointer<T>(pointer: *const T) -> Result<(), PointerError> {
 
 #[inline]
 pub fn lent_pointer<T: 'static>(pointer: *const T) -> Result<(), PointerError> {
+    #[cfg(not(all(feature = "std", feature = "lender")))]
+    return Ok(());
     #[cfg(all(feature = "std", feature = "lender"))]
     match lender::lent_type_of(pointer) {
         Some(type_id) if type_id != std::any::TypeId::of::<T>() => {
