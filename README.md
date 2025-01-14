@@ -16,7 +16,7 @@ For comprehensive insights into Rust's interoperability with other languages, ex
 ## Lender feature
 
 By activating the `lender` feature, functions like `own_back<T>()` validate the pointer, ensuring its validity.
-It means, be returned by `raw<T>()`.
+It means, be returned by `raw<T>()` and `own_back<T>()` with same type.
 
 ## Examples
 
