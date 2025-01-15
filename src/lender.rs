@@ -27,6 +27,15 @@ pub(super) fn lent_type_of<T>(pointer: *const T) -> Option<TypeId> {
     lent_pointers.get(&(pointer as usize)).copied()
 }
 
+fn writable_lent_pointers() -> RwLockWriteGuard<'static, HashMap<usize, TypeId>> {
+    let Ok(lent_pointers) = LENT_POINTERS.write() else {
+        log::error!("RwLock poisoned, it is not possible to add or remove pointers");
+        unreachable!("RwLock poisoned, it is not possible to add or remove pointers");
+    };
+
+    lent_pointers
+}
+
 /// Use only when lend memory as a [`raw`](crate::raw) pointer.
 ///
 /// # Panics
@@ -53,15 +62,18 @@ pub(super) fn lend<T: 'static>(pointer: *const T) -> Result<(), PointerError> {
 /// If the [`RwLock`] used is poisoned, but it only happens if a panic happens
 /// while holding it. And it's specially reviewed and in a small module to
 /// avoid panics while holding it.
-pub(super) fn retrieve<T>(pointer: *const T) {
-    writable_lent_pointers().remove(&(pointer as usize));
-}
-
-fn writable_lent_pointers() -> RwLockWriteGuard<'static, HashMap<usize, TypeId>> {
-    let Ok(lent_pointers) = LENT_POINTERS.write() else {
-        log::error!("RwLock poisoned, it is not possible to add or remove pointers");
-        unreachable!();
-    };
-
-    lent_pointers
+pub(super) fn retrieve<T: 'static>(pointer: *const T) -> Result<(), PointerError> {
+    match writable_lent_pointers().remove(&(pointer as usize)) {
+        Some(type_id) if type_id != TypeId::of::<T>() => {
+            log::error!(
+                "Using a pointer with a different type as an opaque pointer to Rust's data"
+            );
+            Err(PointerError::InvalidType)
+        }
+        None => {
+            log::error!("Using an invalid pointer as an opaque pointer to Rust's data");
+            Err(PointerError::Invalid)
+        }
+        _ => Ok(()),
+    }
 }

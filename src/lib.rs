@@ -63,14 +63,14 @@ pub fn raw<T: 'static>(data: T) -> Result<*mut T, PointerError> {
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub unsafe fn own_back<T: 'static>(pointer: *mut T) -> Result<T, PointerError> {
     validation::not_null_pointer(pointer)?;
+
+    // TODO: Simplify and optimize this.
     #[cfg(all(feature = "std", feature = "lender"))]
     validation::lent_pointer(pointer)?;
-    let boxed = { Box::from_raw(pointer) };
-
     #[cfg(all(feature = "std", feature = "lender"))]
-    lender::retrieve(pointer);
+    lender::retrieve(pointer)?;
 
-    Ok(*boxed)
+    Ok(*Box::from_raw(pointer))
 }
 
 /// Reference to an object but without to own it.

@@ -43,6 +43,16 @@ fn own_back_invalid_type() {
     unsafe { opaque_pointer::own_back(pointer as *mut TestIt).unwrap() };
 }
 
+#[cfg(all(feature = "std", feature = "lender"))]
+#[test]
+fn own_back_twice_error() {
+    let pointer = opaque_pointer::raw(TestIt::new(2)).unwrap();
+    unsafe { opaque_pointer::own_back(pointer).unwrap() };
+
+    let error = unsafe { opaque_pointer::own_back(pointer).unwrap_err() };
+    assert_eq!(error, PointerError::Invalid);
+}
+
 #[test]
 fn immutable_reference() {
     let pointer = opaque_pointer::raw(TestIt::new(2)).unwrap();
