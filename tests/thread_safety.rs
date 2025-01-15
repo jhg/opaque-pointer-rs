@@ -1,6 +1,6 @@
+use opaque_pointer;
 use std::thread;
 use std::time::Duration;
-use opaque_pointer;
 
 #[cfg(all(feature = "std", feature = "lender"))]
 #[test]
